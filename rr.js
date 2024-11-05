@@ -1,5 +1,8 @@
+const fs = require('fs');
 
 function getNextPerson(language = "") {
+  
+  let team = JSON.parse(fs.readFileSync('state.json', 'utf8'));
   const today = new Date();
   let currentIndex = team.findIndex((person) => person.next);
   let startIndex = currentIndex;
@@ -36,6 +39,7 @@ function getNextPerson(language = "") {
 
     if (isException) person.skip++;
     if (!isException) team[nextIndex].next = true;
+    fs.writeFileSync('state.json', JSON.stringify(team, null, 2));
     return `${person.name} (${language})`;
   }
 }
@@ -79,24 +83,4 @@ function padString(str, length) {
   return "\n" + str.padEnd(length, " ") + "\n";
 }
 
-// Example usage
-console.log(getNextPerson()); // Output: Alice De Mauro
-printTeamTable(team);
-console.log(getNextPerson("german")); // Output: Matt Reid
-printTeamTable(team);
-console.log(getNextPerson()); // Output: Matt Froggett
-printTeamTable(team);
-console.log(getNextPerson("italian")); // Output: Matt Reid
-printTeamTable(team);
-console.log(getNextPerson());
-printTeamTable(team);
-console.log(getNextPerson());
-printTeamTable(team);
-console.log(getNextPerson());
-printTeamTable(team);
-console.log(getNextPerson());
-printTeamTable(team);
-console.log(getNextPerson());
-printTeamTable(team);
-console.log(getNextPerson());
-printTeamTable(team);
+
