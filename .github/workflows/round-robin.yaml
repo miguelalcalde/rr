@@ -25,13 +25,8 @@ jobs:
     - name: Run algorithm
       id: run_algorithm
       run: |
-        result=$(node rr.js "${{ steps.read_state.outputs.state }}")
+        result=$(node rr.js)
         echo "::set-output name=result::$result"
-
-    - name: Update state
-      run: |
-        # Update state.json with the new state
-        echo "${{ steps.run_algorithm.outputs.result }}" > state.json
 
     - name: Output result
       run: echo "Assigned to: ${{ steps.run_algorithm.outputs.result }}"
