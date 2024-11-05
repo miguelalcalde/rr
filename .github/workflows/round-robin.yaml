@@ -29,4 +29,5 @@ jobs:
         echo "::set-output name=result::$result"
 
     - name: Output result
-      run: echo "Assigned to: ${{ steps.run_algorithm.outputs.result }}"
+      run: |
+        echo "Assigned to: ${{ steps.run_algorithm.outputs.result }}"
