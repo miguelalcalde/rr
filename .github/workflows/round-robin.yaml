@@ -1,0 +1,37 @@
+name: Round Robin
+
+on:
+  repository_dispatch:
+    types: [round-robin]
+
+jobs:
+  round-robin:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: Read state
+      id: read_state
+      run: |
+        state=$(cat state.json)
+        echo "::set-output name=state::$state"
+
+    - name: Run algorithm
+      id: run_algorithm
+      run: |
+        result=$(node rr.js "${{ steps.read_state.outputs.state }}")
+        echo "::set-output name=result::$result"
+
+    - name: Update state
+      run: |
+        # Update state.json with the new state
+        echo "${{ steps.run_algorithm.outputs.result }}" > state.json
+
+    - name: Output result
+      run: echo "Assigned to: ${{ steps.run_algorithm.outputs.result }}"
