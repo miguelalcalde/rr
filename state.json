@@ -1,0 +1,20 @@
+[
+  {
+    name: "Alice De Mauro",
+    next: true,
+    skip: 0,
+    OOO: "",
+    languages: "italian",
+  },
+  {
+    name: "Matt Reid",
+    next: false,
+    skip: 0,
+    OOO: "",
+    languages: "italian",
+  },
+  { name: "Matt Froggett", next: false, skip: 0, OOO: "", languages: "" },
+  { name: "Yi Min", next: false, skip: 0, OOO: "", languages: "german" },
+  { name: "Miguel", next: false, skip: 0, OOO: "", languages: "spanish" },
+  { name: "Farhan", next: false, skip: 0, OOO: "", languages: "" }
+]
