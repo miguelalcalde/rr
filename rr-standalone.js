@@ -1,7 +1,43 @@
-const fs = require("fs");
+const team = [
+  {
+    name: "Alice",
+    next: true,
+    skip: 0,
+    OOO: "",
+    languages: "italian",
+  },
+  {
+    name: "Matt Reid",
+    next: false,
+    skip: 0,
+    OOO: "",
+    languages: "italian",
+  },
+  {
+    name: "Matt Froggett",
+    next: false,
+    skip: 0,
+    OOO: "",
+    languages: "",
+  },
+  {
+    name: "Yi Min",
+    next: false,
+    skip: 0,
+    OOO: "",
+    languages: "german",
+  },
+  {
+    name: "Miguel",
+    next: false,
+    skip: 0,
+    OOO: "2024-11-11",
+    languages: "spanish",
+  },
+  { name: "Farhan", next: false, skip: 0, OOO: "", languages: "" },
+];
 
 function getNextPerson(language = "") {
-  let team = JSON.parse(fs.readFileSync("state.json", "utf8"));
   const today = new Date();
   let currentIndex = team.findIndex((person) => person.next);
   let startIndex = currentIndex;
@@ -38,12 +74,12 @@ function getNextPerson(language = "") {
 
     if (isException) person.skip++;
     if (!isException) team[nextIndex].next = true;
-    fs.writeFileSync("state.json", JSON.stringify(team, null, 2));
-    return `${person.name} (${language})`;
+    return ` -> ${person.name} ${language ? "[" + language + "]" : ""}`;
   }
 }
 
 function printTeamTable(team) {
+  console.log("\n");
   // Get the maximum length of each property to align the columns
   const maxLengths = {
     name: Math.max(...team.map((member) => member.name.length), 4), // 4 is the length of the header "Name"
@@ -75,11 +111,12 @@ function printTeamTable(team) {
     )} | ${padString(member.languages, maxLengths.languages)} |`;
     console.log(row);
   });
+  console.log("\n");
 }
 
 // Helper function to pad a string with spaces
 function padString(str, length) {
-  return "\n" + str.padEnd(length, " ") + "\n";
+  return str.padEnd(length, " ");
 }
 
 // Example usage
