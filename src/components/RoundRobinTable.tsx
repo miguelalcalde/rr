@@ -9,14 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { updateTeamMember } from "@/actions/team";
-
-type TeamMember = {
-  name: string;
-  next: boolean;
-  skip: number;
-  OOO: Date | null;
-  languages: string[];
-};
+import { TeamMember } from "@/types";
 
 interface RoundRobinTableProps {
   teamData: TeamMember[];

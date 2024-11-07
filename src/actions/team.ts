@@ -3,30 +3,35 @@
 import { revalidateTag } from "next/cache";
 import redis from "@/lib/redis";
 import state from "../../standalone/state.json";
+import { TeamMember, TeamDataResponse } from "@/types";
 
-export async function getTeamData() {
+export async function getTeamData(): Promise<TeamDataResponse> {
   try {
-    let team = await redis.json.get("team", "$");
+    const teamStr = await redis.get("team");
+    let team = teamStr ? JSON.parse(teamStr) : null;
+
     if (!team) {
-      console.log("Using local state fallback");
       team = state;
       try {
-        await redis.json.set("team", "$", state);
+        await redis.set("team", JSON.stringify(state));
       } catch (error) {
-        console.warn("Failed to set initial state in Redis:", error);
+        console.error("Failed to set initial state in Redis:", error);
+        return { success: false, error: "Failed to initialize team data" };
       }
     }
-    return { success: true, data: JSON.parse(JSON.stringify(team)) };
+    return { success: true, data: team };
   } catch (error) {
     console.error("Error fetching team data:", error);
-    return { success: true, data: JSON.parse(JSON.stringify(state)) };
+    return { success: false, error: "Failed to fetch team data" };
   }
 }
 
-export async function setTeamData(teamData: any) {
+export async function setTeamData(
+  teamData: TeamMember[]
+): Promise<{ success: boolean; error?: string }> {
   try {
-    const sanitizedData = JSON.parse(JSON.stringify(teamData));
-    await redis.json.set("team", "$", sanitizedData);
+    const sanitizedData = JSON.stringify(teamData);
+    await redis.set("team", sanitizedData);
     revalidateTag("team-data");
     return { success: true };
   } catch (error) {
@@ -36,9 +41,9 @@ export async function setTeamData(teamData: any) {
 }
 
 export async function updateTeamMember(
-  teamData: any[],
+  teamData: TeamMember[],
   index: number,
-  field: string,
+  field: keyof TeamMember,
   value: any
 ) {
   const newData = [...teamData];

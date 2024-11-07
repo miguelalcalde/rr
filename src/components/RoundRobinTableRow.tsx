@@ -16,14 +16,7 @@ import {
 } from "@/components/ui/popover";
 import { TableCell, TableRow } from "@/components/ui/table";
 import Select from "react-select";
-
-type TeamMember = {
-  name: string;
-  next: boolean;
-  skip: number;
-  OOO: string | null;
-  languages: string[];
-};
+import { TeamMember } from "@/types";
 
 const languageOptions = [
   { label: "Italian", value: "italian" },

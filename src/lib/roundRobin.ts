@@ -1,14 +1,15 @@
 import { getTeamData, setTeamData } from "@/actions/team";
+import { TeamMember } from "@/types";
 
 export async function getNextPerson(language = "") {
   const result = await getTeamData();
   if (!result.success) {
-    throw new Error("Failed to fetch team data");
+    throw new Error(result.error || "Failed to fetch team data");
   }
 
-  let team = result.data;
+  let team = result.data as TeamMember[];
   const today = new Date();
-  let currentIndex = team.findIndex((person) => person.next);
+  let currentIndex = team.findIndex((person: TeamMember) => person.next);
   let startIndex = currentIndex;
   let isException = false;
 
@@ -21,7 +22,7 @@ export async function getNextPerson(language = "") {
       continue;
     }
 
-    if (language && !person.languages.split(",").includes(language)) {
+    if (language && !person.languages.includes(language)) {
       currentIndex = (currentIndex + 1) % team.length;
       isException = true;
       continue;
@@ -40,7 +41,11 @@ export async function getNextPerson(language = "") {
     if (isException) person.skip++;
     if (!isException) team[nextIndex].next = true;
 
-    await setTeamData(team);
+    const setResult = await setTeamData(team);
+    if (!setResult.success) {
+      throw new Error(setResult.error || "Failed to update team data");
+    }
+
     return ` -> ${person.name} ${language ? "[" + language + "]" : ""}`;
   }
 }
