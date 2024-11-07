@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useOptimistic } from "react";
 import { updateTeamMember } from "@/actions/team";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -31,8 +31,16 @@ export function RoundRobinTableRow({
   allMembers,
 }: RoundRobinTableRowProps) {
   const [isPending, startTransition] = useTransition();
+  const [optimisticMember, setOptimisticMember] = useOptimistic(
+    member,
+    (state, optimisticValue: { field: keyof TeamMember; value: any }) => ({
+      ...state,
+      [optimisticValue.field]: optimisticValue.value,
+    })
+  );
 
   const handleInputChange = (field: keyof TeamMember, value: any) => {
+    setOptimisticMember({ field, value });
     startTransition(() => {
       updateTeamMember(allMembers, index, field, value);
     });
@@ -41,18 +49,18 @@ export function RoundRobinTableRow({
   return (
     <TableRow>
       <TableCell>
-        <Label>{member.name}</Label>
+        <Label>{optimisticMember.name}</Label>
       </TableCell>
       <TableCell>
         <Checkbox
-          checked={member.next}
+          checked={optimisticMember.next}
           onCheckedChange={(checked) => handleInputChange("next", checked)}
         />
       </TableCell>
       <TableCell>
         <Input
           type="number"
-          value={member.skip}
+          value={optimisticMember.skip}
           onChange={(e) =>
             handleInputChange("skip", parseInt(e.target.value, 10))
           }
@@ -66,8 +74,8 @@ export function RoundRobinTableRow({
               className="w-[240px] justify-start text-left font-normal"
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {member.OOO ? (
-                format(new Date(member.OOO), "PPP")
+              {optimisticMember.OOO ? (
+                format(new Date(optimisticMember.OOO), "PPP")
               ) : (
                 <span>Pick a date</span>
               )}
@@ -77,7 +85,11 @@ export function RoundRobinTableRow({
             <div className="flex flex-col">
               <Calendar
                 mode="single"
-                selected={member.OOO ? new Date(member.OOO) : undefined}
+                selected={
+                  optimisticMember.OOO
+                    ? new Date(optimisticMember.OOO)
+                    : undefined
+                }
                 onSelect={(date) =>
                   handleInputChange("OOO", date ? date.toISOString() : null)
                 }
@@ -99,7 +111,7 @@ export function RoundRobinTableRow({
           isMulti
           options={requirementOptions}
           value={requirementOptions.filter((option) =>
-            member.requirements.includes(option.value)
+            optimisticMember.requirements.includes(option.value)
           )}
           onChange={(selectedOptions) => {
             const selectedRequirements = selectedOptions
