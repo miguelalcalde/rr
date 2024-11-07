@@ -4,13 +4,19 @@ import { revalidateTag } from "next/cache";
 
 export async function POST(request: Request) {
   try {
-    const { language } = await request.json();
-    const nextPerson = await getNextPerson(language);
+    let requirement = "";
 
-    // Revalidate only team-data tagged cache entries
+    try {
+      const body = await request.json();
+      requirement = body.requirement || "";
+    } catch {
+      // If JSON parsing fails or body is empty, continue with default empty requirement
+    }
+
+    const result = await getNextPerson(requirement);
     revalidateTag("team-data");
 
-    return NextResponse.json({ nextPerson });
+    return NextResponse.json({ result });
   } catch (error) {
     console.error("Error advancing round robin:", error);
     return NextResponse.json(
