@@ -39,6 +39,7 @@ export function RoundRobinTableClient({
         item.next = i === index;
       });
     } else {
+      // @ts-expect-error
       newData[index][field] = value;
     }
     setData(newData);
