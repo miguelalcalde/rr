@@ -1,4 +1,3 @@
-"use server";
 import { RoundRobinTable } from "@/components/RoundRobinTable";
 import { AdvanceButton } from "@/components/AdvanceButton";
 import { getTeamData } from "@/actions/team";
