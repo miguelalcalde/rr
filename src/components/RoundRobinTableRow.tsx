@@ -79,14 +79,23 @@ export function RoundRobinTableRow({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={member.OOO ? new Date(member.OOO) : undefined}
-              onSelect={(date) =>
-                handleInputChange("OOO", date ? date.toISOString() : null)
-              }
-              initialFocus
-            />
+            <div className="flex flex-col">
+              <Calendar
+                mode="single"
+                selected={member.OOO ? new Date(member.OOO) : undefined}
+                onSelect={(date) =>
+                  handleInputChange("OOO", date ? date.toISOString() : null)
+                }
+                initialFocus
+              />
+              <Button
+                variant="ghost"
+                className="mt-2"
+                onClick={() => handleInputChange("OOO", null)}
+              >
+                Clear Date
+              </Button>
+            </div>
           </PopoverContent>
         </Popover>
       </TableCell>
