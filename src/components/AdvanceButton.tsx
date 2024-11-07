@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getNextPerson } from "@/lib/roundRobin";
 import Select from "react-select";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const languageOptions = [
   { label: "Italian", value: "italian" },
@@ -19,12 +20,12 @@ export function AdvanceButton() {
   const handleAdvance = async () => {
     try {
       const nextPerson = await getNextPerson(selectedLanguage);
-      alert(`Next person${nextPerson}`);
+      toast.success(`Next person${nextPerson}`);
       // Refresh the current route and fetch new data
       router.refresh();
     } catch (error) {
+      toast.error("Failed to advance round robin");
       console.error("Failed to advance round robin:", error);
-      alert("Failed to advance round robin");
     }
   };
 

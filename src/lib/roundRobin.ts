@@ -69,6 +69,7 @@ export async function getNextPerson(language = "") {
       throw new Error(setResult.error || "Failed to update team data");
     }
 
-    return ` -> ${person.name} ${language ? "[" + language + "]" : ""}`;
+    // return ` -> ${person.name} ${language ? "[" + language + "]" : ""}`;
+    return { next: person, requirements: language };
   }
 }

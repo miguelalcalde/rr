@@ -2,7 +2,6 @@
 import { RoundRobinTable } from "@/components/RoundRobinTable";
 import { AdvanceButton } from "@/components/AdvanceButton";
 import { getTeamData } from "@/actions/team";
-import { error } from "console";
 
 export default async function Page() {
   const result = await getTeamData();
