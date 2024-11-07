@@ -1,19 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { TableCell, TableRow } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { useTransition } from "react";
+import { updateTeamMember } from "@/actions/team";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { TableCell, TableRow } from "@/components/ui/table";
 import Select from "react-select";
 
 type TeamMember = {
@@ -33,14 +34,22 @@ const languageOptions = [
 interface RoundRobinTableRowProps {
   member: TeamMember;
   index: number;
-  onUpdate: (index: number, field: keyof TeamMember, value: any) => void;
+  allMembers: TeamMember[];
 }
 
 export function RoundRobinTableRow({
   member,
   index,
-  onUpdate,
+  allMembers,
 }: RoundRobinTableRowProps) {
+  const [isPending, startTransition] = useTransition();
+
+  const handleInputChange = (field: keyof TeamMember, value: any) => {
+    startTransition(() => {
+      updateTeamMember(allMembers, index, field, value);
+    });
+  };
+
   return (
     <TableRow>
       <TableCell>
@@ -49,7 +58,7 @@ export function RoundRobinTableRow({
       <TableCell>
         <Checkbox
           checked={member.next}
-          onCheckedChange={(checked) => onUpdate(index, "next", checked)}
+          onCheckedChange={(checked) => handleInputChange("next", checked)}
         />
       </TableCell>
       <TableCell>
@@ -57,7 +66,7 @@ export function RoundRobinTableRow({
           type="number"
           value={member.skip}
           onChange={(e) =>
-            onUpdate(index, "skip", parseInt(e.target.value, 10))
+            handleInputChange("skip", parseInt(e.target.value, 10))
           }
         />
       </TableCell>
@@ -80,7 +89,7 @@ export function RoundRobinTableRow({
             <Calendar
               mode="single"
               selected={member.OOO || undefined}
-              onSelect={(date) => onUpdate(index, "OOO", date)}
+              onSelect={(date) => handleInputChange("OOO", date)}
               initialFocus
             />
           </PopoverContent>
@@ -97,7 +106,7 @@ export function RoundRobinTableRow({
             const selectedLanguages = selectedOptions
               ? selectedOptions.map((option) => option.value)
               : [];
-            onUpdate(index, "languages", selectedLanguages);
+            handleInputChange("languages", selectedLanguages);
           }}
           className="w-[200px]"
         />
