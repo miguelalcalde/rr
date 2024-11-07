@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import Redis from "ioredis-json";
 
 if (!process.env.REDIS_URL) {
   throw new Error("REDIS_URL is not defined");
@@ -6,7 +6,7 @@ if (!process.env.REDIS_URL) {
 
 const redis = new Redis(process.env.REDIS_URL);
 
-redis.on("error", (error) => {
+redis.on("error", (error: any) => {
   console.error("Redis connection error:", error);
 });
 

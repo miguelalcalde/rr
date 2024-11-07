@@ -2,29 +2,19 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { getNextPerson } from "@/lib/roundRobin";
 
 export function AdvanceButton() {
   const router = useRouter();
 
   const handleAdvance = async () => {
     try {
-      const response = await fetch("/api/advance", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ language: "" }),
-      });
-
-      const data = await response.json();
+      const nextPerson = await getNextPerson();
+      alert(`Next person${nextPerson}`);
+      // Refresh the current route and fetch new data
       router.refresh();
-
-      if (data.nextPerson) {
-        alert(`Next person${data.nextPerson}`);
-        // Refresh the current route and fetch new data
-        router.refresh();
-      }
     } catch (error) {
+      console.error("Failed to advance round robin:", error);
       alert("Failed to advance round robin");
     }
   };

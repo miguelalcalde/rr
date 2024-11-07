@@ -1,19 +1,12 @@
 import { NextResponse } from "next/server";
-import redis from "@/lib/redis";
-import state from "../../../../standalone/state.json";
+import { getTeamData, setTeamData } from "@/actions/team";
 
 export async function GET() {
-  try {
-    let team = await redis.get("team");
-    if (!team) {
-      await redis.set("team", JSON.stringify(state));
-      team = state;
-    } else {
-      team = JSON.parse(team);
-    }
-    return NextResponse.json(team);
-  } catch (error) {
-    console.error("Error fetching team data:", error);
+  const result = await getTeamData();
+
+  if (result.success) {
+    return NextResponse.json(result.data);
+  } else {
     return NextResponse.json(
       { error: "Failed to fetch team data" },
       { status: 500 }
@@ -24,8 +17,13 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const team = await request.json();
-    await redis.set("team", JSON.stringify(team));
-    return NextResponse.json({ success: true });
+    const result = await setTeamData(team);
+
+    if (result.success) {
+      return NextResponse.json({ success: true });
+    } else {
+      throw result.error;
+    }
   } catch (error) {
     console.error("Error updating team data:", error);
     return NextResponse.json(

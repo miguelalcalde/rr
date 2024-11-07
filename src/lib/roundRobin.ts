@@ -1,21 +1,12 @@
-import redis from "@/lib/redis";
-
-type TeamMember = {
-  name: string;
-  next: boolean;
-  skip: number;
-  OOO: string;
-  languages: string;
-};
+import { getTeamData, setTeamData } from "@/actions/team";
 
 export async function getNextPerson(language = "") {
-  // Get team from Redis
-  const teamJson = await redis.get("team");
-  if (!teamJson) {
-    throw new Error("Team data not found in Redis");
+  const result = await getTeamData();
+  if (!result.success) {
+    throw new Error("Failed to fetch team data");
   }
 
-  let team: TeamMember[] = JSON.parse(teamJson);
+  let team = result.data;
   const today = new Date();
   let currentIndex = team.findIndex((person) => person.next);
   let startIndex = currentIndex;
@@ -49,9 +40,7 @@ export async function getNextPerson(language = "") {
     if (isException) person.skip++;
     if (!isException) team[nextIndex].next = true;
 
-    // Save updated team state back to Redis
-    await redis.set("team", JSON.stringify(team));
-
+    await setTeamData(team);
     return ` -> ${person.name} ${language ? "[" + language + "]" : ""}`;
   }
 }

@@ -1,16 +1,12 @@
+"use server";
 import { RoundRobinTable } from "@/components/RoundRobinTable";
 import { AdvanceButton } from "@/components/AdvanceButton";
-
-async function getTeamData() {
-  const res = await fetch(`${process.env.VERCEL_URL}/api/team`, {
-    next: { tags: ["team-data"] },
-  });
-  if (!res.ok) throw new Error("Failed to fetch data");
-  return res.json();
-}
+import { getTeamData } from "@/actions/team";
+import { error } from "console";
 
 export default async function Page() {
-  const teamData = await getTeamData();
+  const result = await getTeamData();
+  const teamData = result.success ? result.data : result.error;
 
   return (
     <div className="container mx-auto py-10">

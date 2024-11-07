@@ -21,7 +21,7 @@ type TeamMember = {
   name: string;
   next: boolean;
   skip: number;
-  OOO: Date | null;
+  OOO: string | null;
   languages: string[];
 };
 
@@ -79,7 +79,7 @@ export function RoundRobinTableRow({
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {member.OOO ? (
-                format(member.OOO, "PPP")
+                format(new Date(member.OOO), "PPP")
               ) : (
                 <span>Pick a date</span>
               )}
@@ -88,8 +88,10 @@ export function RoundRobinTableRow({
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={member.OOO || undefined}
-              onSelect={(date) => handleInputChange("OOO", date)}
+              selected={member.OOO ? new Date(member.OOO) : undefined}
+              onSelect={(date) =>
+                handleInputChange("OOO", date ? date.toISOString() : null)
+              }
               initialFocus
             />
           </PopoverContent>

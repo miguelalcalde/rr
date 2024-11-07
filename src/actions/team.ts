@@ -1,6 +1,33 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import redis from "@/lib/redis";
+import state from "../../standalone/state.json";
+
+export async function getTeamData() {
+  try {
+    let team = await redis.json.get("team", "$");
+    if (!team) {
+      await redis.json.set("team", "$", state);
+      team = state;
+    }
+    return { success: true, data: team };
+  } catch (error) {
+    console.error("Error fetching team data:", error);
+    return { success: false, error };
+  }
+}
+
+export async function setTeamData(teamData: any) {
+  try {
+    await redis.json.set("team", "$", teamData);
+    revalidateTag("team-data");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating team data:", error);
+    return { success: false, error };
+  }
+}
 
 export async function updateTeamMember(
   teamData: any[],
@@ -18,28 +45,5 @@ export async function updateTeamMember(
     newData[index][field] = value;
   }
 
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/team`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newData),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to update team data");
-    }
-
-    // Revalidate the team data
-    revalidateTag("team-data");
-
-    return { success: true };
-  } catch (error) {
-    console.error("Error updating team member:", error);
-    return { success: false, error };
-  }
+  return setTeamData(newData);
 }
