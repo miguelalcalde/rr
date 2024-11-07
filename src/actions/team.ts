@@ -8,24 +8,30 @@ export async function getTeamData() {
   try {
     let team = await redis.json.get("team", "$");
     if (!team) {
-      await redis.json.set("team", "$", state);
+      console.log("Using local state fallback");
       team = state;
+      try {
+        await redis.json.set("team", "$", state);
+      } catch (error) {
+        console.warn("Failed to set initial state in Redis:", error);
+      }
     }
-    return { success: true, data: team };
+    return { success: true, data: JSON.parse(JSON.stringify(team)) };
   } catch (error) {
     console.error("Error fetching team data:", error);
-    return { success: false, error };
+    return { success: true, data: JSON.parse(JSON.stringify(state)) };
   }
 }
 
 export async function setTeamData(teamData: any) {
   try {
-    await redis.json.set("team", "$", teamData);
+    const sanitizedData = JSON.parse(JSON.stringify(teamData));
+    await redis.json.set("team", "$", sanitizedData);
     revalidateTag("team-data");
     return { success: true };
   } catch (error) {
     console.error("Error updating team data:", error);
-    return { success: false, error };
+    return { success: false, error: "Failed to update team data" };
   }
 }
 

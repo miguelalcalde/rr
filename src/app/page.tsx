@@ -7,7 +7,8 @@ import { error } from "console";
 export default async function Page() {
   const result = await getTeamData();
   const teamData = result.success ? result.data : result.error;
-
+  console.log(`TEAM DATA: `);
+  console.log(teamData);
   return (
     <div className="container mx-auto py-10">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
