@@ -18,7 +18,7 @@ export default async function Page() {
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container flex justify-center py-10">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
         <div className="mb-4">
           <AdvanceButton />

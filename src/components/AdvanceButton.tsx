@@ -7,6 +7,7 @@ import Select from "react-select";
 import { useState } from "react";
 import { toast } from "sonner";
 import { requirementOptions } from "@/lib/requirements";
+import { ArrowRight } from "lucide-react";
 
 export function AdvanceButton() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export function AdvanceButton() {
   };
 
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-2 items-center justify-end">
       <Select
         options={requirementOptions}
         value={requirementOptions.find(
@@ -42,9 +43,12 @@ export function AdvanceButton() {
         }}
         isClearable
         className="w-[200px]"
-        placeholder="Select requirement"
+        placeholder="Requirement"
       />
-      <Button onClick={handleAdvance}>Advance Round Robin</Button>
+      <Button onClick={handleAdvance}>
+        <ArrowRight className="w-4 h-4" />
+        Next
+      </Button>
     </div>
   );
 }

@@ -48,37 +48,40 @@ export function RoundRobinTableRow({
 
   return (
     <TableRow>
-      <TableCell>
-        <Label>{optimisticMember.name}</Label>
+      <TableCell className="w-[150px] min-w-[100px]">
+        <Label className="line-clamp-1 text-xs md:text-sm">
+          {optimisticMember.name}
+        </Label>
       </TableCell>
-      <TableCell>
+      <TableCell className="w-[80px] min-w-[80px] text-center">
         <Checkbox
           checked={optimisticMember.next}
           onCheckedChange={(checked) => handleInputChange("next", checked)}
         />
       </TableCell>
-      <TableCell>
+      <TableCell className="w-[80px] min-w-[80px]">
         <Input
           type="number"
           value={optimisticMember.skip}
           onChange={(e) =>
             handleInputChange("skip", parseInt(e.target.value, 10))
           }
+          className="w-full text-xs md:text-sm"
         />
       </TableCell>
-      <TableCell>
+      <TableCell className="w-[200px] min-w-[200px]">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className="w-[240px] justify-start text-left font-normal"
+              className="w-full justify-start text-left font-normal truncate text-xs md:text-sm"
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {optimisticMember.OOO ? (
-                format(new Date(optimisticMember.OOO), "PPP")
-              ) : (
-                <span>Pick a date</span>
-              )}
+              <CalendarIcon className="mr-2 h-3 w-3 md:h-4 md:w-4 shrink-0" />
+              <span className="truncate">
+                {optimisticMember.OOO
+                  ? format(new Date(optimisticMember.OOO), "PPP")
+                  : "Pick a date"}
+              </span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -97,7 +100,7 @@ export function RoundRobinTableRow({
               />
               <Button
                 variant="ghost"
-                className="mt-2"
+                className="mt-2 text-xs md:text-sm"
                 onClick={() => handleInputChange("OOO", null)}
               >
                 Clear Date
@@ -106,7 +109,7 @@ export function RoundRobinTableRow({
           </PopoverContent>
         </Popover>
       </TableCell>
-      <TableCell>
+      <TableCell className="w-[300px] min-w-[300px]">
         <Select
           isMulti
           options={requirementOptions}
@@ -119,7 +122,24 @@ export function RoundRobinTableRow({
               : [];
             handleInputChange("requirements", selectedRequirements);
           }}
-          className="w-[200px]"
+          className="w-full text-xs md:text-sm"
+          classNamePrefix="select"
+          styles={{
+            control: (base) => ({
+              ...base,
+              minWidth: "100%",
+              fontSize: "inherit",
+            }),
+            menu: (base) => ({
+              ...base,
+              minWidth: "100%",
+              fontSize: "inherit",
+            }),
+            option: (base) => ({
+              ...base,
+              fontSize: "inherit",
+            }),
+          }}
         />
       </TableCell>
     </TableRow>
