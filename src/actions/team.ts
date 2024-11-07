@@ -16,13 +16,17 @@ export async function getTeamData(): Promise<TeamDataResponse> {
         await redis.set("team", JSON.stringify(state));
       } catch (error) {
         console.error("Failed to set initial state in Redis:", error);
-        return { success: false, error: "Failed to initialize team data" };
+        return {
+          success: false,
+          data: [],
+          error: "Failed to initialize team data",
+        };
       }
     }
     return { success: true, data: team };
   } catch (error) {
     console.error("Error fetching team data:", error);
-    return { success: false, error: "Failed to fetch team data" };
+    return { success: false, data: [], error: "Failed to fetch team data" };
   }
 }
 
@@ -53,6 +57,7 @@ export async function updateTeamMember(
       item.next = i === index;
     });
   } else {
+    // @ts-expect-error
     newData[index][field] = value;
   }
 

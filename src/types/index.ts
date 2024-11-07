@@ -8,6 +8,6 @@ export type TeamMember = {
 
 export type TeamDataResponse = {
   success: boolean;
-  data?: TeamMember[];
+  data: TeamMember[];
   error?: string;
 };

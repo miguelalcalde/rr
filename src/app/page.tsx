@@ -25,10 +25,10 @@ export default async function Page() {
         </div>
         <RoundRobinTable teamData={result.data} />
       </div>
-      <div>
+      {/* <div>
         <h2>Team Data:</h2>
         <pre>{JSON.stringify(result.data, null, 2)}</pre>
-      </div>
+      </div> */}
     </div>
   );
 }
