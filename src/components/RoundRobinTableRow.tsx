@@ -17,12 +17,7 @@ import {
 import { TableCell, TableRow } from "@/components/ui/table";
 import Select from "react-select";
 import { TeamMember } from "@/types";
-
-const languageOptions = [
-  { label: "Italian", value: "italian" },
-  { label: "German", value: "german" },
-  { label: "Spanish", value: "spanish" },
-];
+import { requirementOptions } from "@/lib/requirements";
 
 interface RoundRobinTableRowProps {
   member: TeamMember;
@@ -102,15 +97,15 @@ export function RoundRobinTableRow({
       <TableCell>
         <Select
           isMulti
-          options={languageOptions}
-          value={languageOptions.filter((option) =>
-            member.languages.includes(option.value)
+          options={requirementOptions}
+          value={requirementOptions.filter((option) =>
+            member.requirements.includes(option.value)
           )}
           onChange={(selectedOptions) => {
-            const selectedLanguages = selectedOptions
+            const selectedRequirements = selectedOptions
               ? selectedOptions.map((option) => option.value)
               : [];
-            handleInputChange("languages", selectedLanguages);
+            handleInputChange("requirements", selectedRequirements);
           }}
           className="w-[200px]"
         />

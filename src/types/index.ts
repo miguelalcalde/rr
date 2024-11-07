@@ -3,7 +3,7 @@ export type TeamMember = {
   next: boolean;
   skip: number;
   OOO: string | null;
-  languages: string[];
+  requirements: string[];
 };
 
 export type TeamDataResponse = {

@@ -6,21 +6,22 @@ import { getNextPerson } from "@/lib/roundRobin";
 import Select from "react-select";
 import { useState } from "react";
 import { toast } from "sonner";
-
-const languageOptions = [
-  { label: "Italian", value: "italian" },
-  { label: "German", value: "german" },
-  { label: "Spanish", value: "spanish" },
-];
+import { requirementOptions } from "@/lib/requirements";
 
 export function AdvanceButton() {
   const router = useRouter();
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
+  const [selectedRequirement, setSelectedRequirement] = useState<string>("");
 
   const handleAdvance = async () => {
     try {
-      const nextPerson = await getNextPerson(selectedLanguage);
-      toast.success(`Next person${nextPerson}`);
+      const result = await getNextPerson(selectedRequirement);
+      if (result.error) {
+        toast.warning(result.error);
+      } else {
+        toast.success(`Next task assigned to ${result.next?.name}`, {
+          description: result.requirements,
+        });
+      }
       // Refresh the current route and fetch new data
       router.refresh();
     } catch (error) {
@@ -32,16 +33,16 @@ export function AdvanceButton() {
   return (
     <div className="flex gap-2 items-center">
       <Select
-        options={languageOptions}
-        value={languageOptions.find(
-          (option) => option.value === selectedLanguage
+        options={requirementOptions}
+        value={requirementOptions.find(
+          (option) => option.value === selectedRequirement
         )}
         onChange={(selectedOption) => {
-          setSelectedLanguage(selectedOption ? selectedOption.value : "");
+          setSelectedRequirement(selectedOption ? selectedOption.value : "");
         }}
         isClearable
         className="w-[200px]"
-        placeholder="Select language"
+        placeholder="Select requirement"
       />
       <Button onClick={handleAdvance}>Advance Round Robin</Button>
     </div>

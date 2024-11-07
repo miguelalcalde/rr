@@ -1,7 +1,7 @@
 import { getTeamData, setTeamData } from "@/actions/team";
 import { TeamMember } from "@/types";
 
-export async function getNextPerson(language = "") {
+export async function getNextPerson(requirement = "") {
   const result = await getTeamData();
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch team data");
@@ -10,7 +10,7 @@ export async function getNextPerson(language = "") {
   let team = result.data as TeamMember[];
   const today = new Date();
   let currentIndex = team.findIndex((person: TeamMember) => person.next);
-  let hasSpecialRequirement = language.length > 0;
+  let hasSpecialRequirement = requirement.length > 0;
   let isException = false; // this means we're moving on in the round robin to assign first person that meets the special requirements
   let firstSkippedIndex = -1;
 
@@ -18,7 +18,10 @@ export async function getNextPerson(language = "") {
     let person = team[currentIndex];
 
     if (firstSkippedIndex === currentIndex) {
-      return "Error: No one available under current conditions";
+      return {
+        next: null,
+        error: "Error: No one available under current conditions",
+      };
     }
 
     if (person.OOO && new Date(person.OOO) > today) {
@@ -28,7 +31,7 @@ export async function getNextPerson(language = "") {
       continue;
     }
 
-    if (language && !person.languages.includes(language)) {
+    if (requirement && !person.requirements.includes(requirement)) {
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       isException = true;
       currentIndex = (currentIndex + 1) % team.length;
@@ -48,7 +51,8 @@ export async function getNextPerson(language = "") {
       // Find eligible person with lowest skip count
       const eligiblePeople = team.filter(
         (p) =>
-          p.languages.includes(language) && (!p.OOO || new Date(p.OOO) <= today)
+          p.requirements.includes(requirement) &&
+          (!p.OOO || new Date(p.OOO) <= today)
       );
       const lowestSkip = Math.min(...eligiblePeople.map((p) => p.skip));
       const bestPerson = eligiblePeople.find((p) => p.skip === lowestSkip);
@@ -69,7 +73,7 @@ export async function getNextPerson(language = "") {
       throw new Error(setResult.error || "Failed to update team data");
     }
 
-    // return ` -> ${person.name} ${language ? "[" + language + "]" : ""}`;
-    return { next: person, requirements: language };
+    // return ` -> ${person.name} ${requirement ? "[" + requirement + "]" : ""}`;
+    return { next: person, requirements: requirement };
   }
 }

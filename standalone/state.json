@@ -4,35 +4,41 @@
     "next": true,
     "skip": 0,
     "OOO": "",
-    "languages": "italian"
+    "requirements": ["italian"]
   },
   {
     "name": "Matt Reid",
     "next": false,
     "skip": 0,
     "OOO": "",
-    "languages": "italian"
+    "requirements": ["italian"]
   },
   {
     "name": "Matt Froggett",
     "next": false,
     "skip": 0,
     "OOO": "",
-    "languages": ""
+    "requirements": []
   },
   {
     "name": "Yi Min",
     "next": false,
     "skip": 0,
     "OOO": "",
-    "languages": "german"
+    "requirements": ["german"]
   },
   {
     "name": "Miguel",
     "next": false,
     "skip": 0,
     "OOO": "",
-    "languages": "spanish"
+    "requirements": ["spanish"]
   },
-  { "name": "Farhan", "next": false, "skip": 0, "OOO": "", "languages": "" }
+  {
+    "name": "Farhan",
+    "next": false,
+    "skip": 0,
+    "OOO": "",
+    "requirements": []
+  }
 ]
