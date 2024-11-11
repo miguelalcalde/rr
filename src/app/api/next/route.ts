@@ -13,16 +13,11 @@ function toSnakeCase(str: string): string {
 
 export async function POST(request: Request) {
   try {
-    let requirement = "";
-
-    try {
-      const body = await request.json();
-      requirement = toSnakeCase(body.requirement || "");
-    } catch {
-      // If JSON parsing fails or body is empty, continue with default empty requirement
-    }
-
-    const result = await getNextPerson(requirement);
+    const body = await request.json();
+    let { requirement = "", ae = "" } = body;
+    requirement = toSnakeCase(requirement);
+    ae = toSnakeCase(ae);
+    const result = await getNextPerson(requirement, ae);
     revalidateTag("team-data");
 
     return NextResponse.json({ result });

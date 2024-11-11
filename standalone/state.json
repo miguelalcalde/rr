@@ -4,41 +4,47 @@
     "next": true,
     "skip": 0,
     "OOO": "",
-    "requirements": ["italian"]
+    "requirements": ["italian"],
+    "aes": []
   },
   {
     "name": "Matt Reid",
     "next": false,
     "skip": 0,
     "OOO": "",
-    "requirements": ["italian"]
+    "requirements": ["italian"],
+    "aes": []
   },
   {
     "name": "Matt Froggett",
     "next": false,
     "skip": 0,
     "OOO": "",
-    "requirements": []
+    "requirements": [],
+    "aes": []
   },
   {
     "name": "Yi Min",
     "next": false,
     "skip": 0,
     "OOO": "",
-    "requirements": ["german"]
+    "requirements": ["german"],
+    "aes": []
   },
   {
     "name": "Miguel",
     "next": false,
     "skip": 0,
     "OOO": "",
-    "requirements": ["spanish"]
+    "requirements": ["spanish"],
+    "aes": ["ae1@mail.com"]
   },
   {
     "name": "Farhan",
     "next": false,
     "skip": 0,
     "OOO": "",
-    "requirements": []
+    "requirements": [],
+    "aes": ["ae2@mail.com"]
   }
 ]

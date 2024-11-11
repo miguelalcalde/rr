@@ -1,7 +1,21 @@
 import { getTeamData, setTeamData } from "@/actions/team";
 import { TeamMember } from "@/types";
+import { toast } from "sonner";
 
-export async function getNextPerson(requirement = "") {
+const meetsRequirements = (person: any, requirement: string) => {
+  return !requirement || person.requirements.includes(requirement);
+};
+
+const worksWithAE = (person: any, ae: string) => {
+  return !ae || person.aes.length <= 0 || person.aes.includes(ae);
+};
+
+const logState = (person: any, currentIndex: number) => {
+  console.log(`currentIndex: ${currentIndex}, person ↓`);
+  console.log(person);
+};
+
+export async function getNextPerson(requirement = "", ae = "") {
   const result = await getTeamData();
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch team data");
@@ -16,22 +30,35 @@ export async function getNextPerson(requirement = "") {
 
   while (true) {
     let person = team[currentIndex];
+    console.log("loop start");
+    logState(person, currentIndex);
 
     if (firstSkippedIndex === currentIndex) {
       return {
+        request: { requirement, ae },
         next: null,
         error: "Error: No one available under current conditions",
       };
     }
 
     if (person.OOO && new Date(person.OOO) > today) {
+      console.log(`Skip: OOO`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       currentIndex = (currentIndex + 1) % team.length;
       person.next = false;
       continue;
     }
 
-    if (requirement && !person.requirements.includes(requirement)) {
+    if (requirement && !meetsRequirements(person, requirement)) {
+      console.log(`Skip: requirements`);
+      if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
+      isException = true;
+      currentIndex = (currentIndex + 1) % team.length;
+      continue;
+    }
+
+    if (ae && !worksWithAE(person, ae)) {
+      console.log(`Skip: AE`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       isException = true;
       currentIndex = (currentIndex + 1) % team.length;
@@ -40,6 +67,7 @@ export async function getNextPerson(requirement = "") {
 
     // Not taking into account special requirements.
     if (person.skip > 0 && !isException) {
+      console.log(`Skip: Skip`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       person.skip--;
       person.next = false;
@@ -48,32 +76,53 @@ export async function getNextPerson(requirement = "") {
     }
 
     if (isException) {
-      // Find eligible person with lowest skip count
-      const eligiblePeople = team.filter(
-        (p) =>
-          p.requirements.includes(requirement) &&
+      // Find eligible people
+      const eligiblePeople = team.filter((p) => {
+        return (
+          meetsRequirements(p, requirement) &&
+          worksWithAE(p, ae) &&
           (!p.OOO || new Date(p.OOO) <= today)
-      );
-      const lowestSkip = Math.min(...eligiblePeople.map((p) => p.skip));
-      const bestPerson = eligiblePeople.find((p) => p.skip === lowestSkip);
+        );
+      });
+
+      // Find the index of the person marked as next
+      const nextPersonIndex = team.findIndex((p) => p.next);
+
+      // Reorder eligible people starting from the next person
+      const reorderedEligible = [
+        ...eligiblePeople.filter((_, i) => team.indexOf(_) >= nextPersonIndex),
+        ...eligiblePeople.filter((_, i) => team.indexOf(_) < nextPersonIndex),
+      ];
+
+      const lowestSkip = Math.min(...reorderedEligible.map((p) => p.skip));
+      const bestPerson = reorderedEligible.find((p) => p.skip === lowestSkip);
 
       // Update current person to be the best candidate
       currentIndex = team.findIndex((p) => p.name === bestPerson?.name);
       person = team[currentIndex];
     }
-
+    console.log("loop end");
+    logState(person, currentIndex);
     team[currentIndex].next = false;
     const nextIndex = (currentIndex + 1) % team.length;
 
-    if (hasSpecialRequirement) person.skip++;
+    if (isException) person.skip++;
     if (!isException) team[nextIndex].next = true;
 
     const setResult = await setTeamData(team);
     if (!setResult.success) {
-      throw new Error(setResult.error || "Failed to update team data");
+      return {
+        request: { requirement, ae },
+        next: null,
+        error: setResult.error || "Failed to update team data",
+      };
     }
 
     // return ` -> ${person.name} ${requirement ? "[" + requirement + "]" : ""}`;
-    return { next: person, requirements: requirement };
+    return {
+      request: { requirement, ae },
+      next: person,
+      requirements: requirement,
+    };
   }
 }

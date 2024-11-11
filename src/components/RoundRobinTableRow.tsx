@@ -17,7 +17,7 @@ import {
 import { TableCell, TableRow } from "@/components/ui/table";
 import Select from "react-select";
 import { TeamMember } from "@/types";
-import { requirementOptions } from "@/lib/requirements";
+import { requirementOptions, AEs, isValidAE } from "@/lib/requirements";
 
 interface RoundRobinTableRowProps {
   member: TeamMember;
@@ -121,6 +121,39 @@ export function RoundRobinTableRow({
               ? selectedOptions.map((option) => option.value)
               : [];
             handleInputChange("requirements", selectedRequirements);
+          }}
+          className="w-full text-xs md:text-sm"
+          classNamePrefix="select"
+          styles={{
+            control: (base) => ({
+              ...base,
+              minWidth: "100%",
+              fontSize: "inherit",
+            }),
+            menu: (base) => ({
+              ...base,
+              minWidth: "100%",
+              fontSize: "inherit",
+            }),
+            option: (base) => ({
+              ...base,
+              fontSize: "inherit",
+            }),
+          }}
+        />
+      </TableCell>
+      <TableCell className="w-[300px] min-w-[300px]">
+        <Select
+          isMulti
+          options={AEs}
+          value={AEs.filter((option) =>
+            optimisticMember.aes.includes(option.value)
+          )}
+          onChange={(selectedOptions) => {
+            const selectedAEs = selectedOptions
+              ? selectedOptions.map((option) => option.value)
+              : [];
+            handleInputChange("aes", selectedAEs);
           }}
           className="w-full text-xs md:text-sm"
           classNamePrefix="select"

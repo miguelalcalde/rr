@@ -33,6 +33,9 @@ export function RoundRobinTable({ teamData }: RoundRobinTableProps) {
             <TableHead className="w-[300px] min-w-[300px] text-xs md:text-sm">
               Requirements
             </TableHead>
+            <TableHead className="w-[300px] min-w-[300px] text-xs md:text-sm">
+              AEs
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

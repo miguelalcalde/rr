@@ -1,10 +1,11 @@
-export type TeamMember = {
+export interface TeamMember {
   name: string;
   next: boolean;
   skip: number;
-  OOO: string | null;
+  OOO: string;
   requirements: string[];
-};
+  aes: string;
+}
 
 export type TeamDataResponse = {
   success: boolean;
