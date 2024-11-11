@@ -21,8 +21,8 @@ type Result = {
     company: string;
     requirement: string;
     ae: string;
-    isException?: boolean;
   };
+  isException?: boolean;
   next: any;
   error?: string;
 };
@@ -47,7 +47,8 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
 
     if (firstSkippedIndex === currentIndex) {
       const errorResult = {
-        request: { requirement, ae, company, isException },
+        request: { requirement, ae, company },
+        isException,
         next: null,
         error: "Error: No one available under current conditions",
       };
@@ -122,7 +123,8 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
     const setResult = await setTeamData(team);
     if (!setResult.success) {
       const errorResult = {
-        request: { requirement, ae, company, isException },
+        request: { requirement, ae, company },
+        isException,
         next: null,
         error: setResult.error || "Failed to update team data",
       };
@@ -131,7 +133,8 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
     }
 
     const roundRobinResult = {
-      request: { requirement, ae, company, isException },
+      request: { requirement, ae, company },
+      isException,
       next: person,
       requirements: requirement,
     };

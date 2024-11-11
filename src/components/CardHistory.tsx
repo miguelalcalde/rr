@@ -3,14 +3,19 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { FileText, Clock, User, ArrowRight, Building2 } from "lucide-react";
+import { FileText, Clock, User, ArrowRight, Building2, Asterisk } from "lucide-react";
 import { HistoryEntry } from "@/actions/history";
 
 export default function CardHistory({ data }: { data: HistoryEntry }) {
   const { timestamp, result } = data;
 
   return (
-    <Card className="p-4 w-full ">
+    <Card className="p-4 w-full relative">
+      {result.isException && (
+        <div className="absolute -top-2 -right-2 bg-white rounded-full p-1 border border-neutral-300">
+          <Asterisk className="h-4 w-4" />
+        </div>
+      )}
       <div className="grid grid-cols-5 gap-4 items-center">
         <TooltipProvider>
           <Tooltip>

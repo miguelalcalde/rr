@@ -9,6 +9,7 @@ export type HistoryEntry = {
   result: {
     request: { requirement: string; ae: string; company: string };
     next: TeamMember | null;
+    isException?: boolean;
     requirements?: string;
     error?: string;
   };
