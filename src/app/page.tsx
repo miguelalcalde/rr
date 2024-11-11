@@ -27,6 +27,7 @@ export default async function Page() {
         <div className="mb-4">
           <AdvanceButton />
         </div>
+        <h2 className="text-xl font-bold mb-4">Team</h2>
         <RoundRobinTable teamData={result.data} />
         {/* <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">Current Team Data:</h2>

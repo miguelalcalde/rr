@@ -62,7 +62,7 @@ export function AdvanceButton() {
         }}
         isClearable
         className="w-[200px]"
-        placeholder="Select AE (optional)"
+        placeholder="AE"
       />
       <Button onClick={handleAdvance}>
         <ArrowRight className="w-4 h-4" />

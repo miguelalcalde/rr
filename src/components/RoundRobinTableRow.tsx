@@ -109,7 +109,7 @@ export function RoundRobinTableRow({
           </PopoverContent>
         </Popover>
       </TableCell>
-      <TableCell className="w-[300px] min-w-[300px]">
+      <TableCell className="w-[300px] min-w-[300px] max-w-[300px]">
         <Select
           isMulti
           options={requirementOptions}
@@ -128,21 +128,40 @@ export function RoundRobinTableRow({
             control: (base) => ({
               ...base,
               minWidth: "100%",
+              maxWidth: "280px",
               fontSize: "inherit",
             }),
             menu: (base) => ({
               ...base,
               minWidth: "100%",
+              maxWidth: "280px",
               fontSize: "inherit",
             }),
             option: (base) => ({
               ...base,
               fontSize: "inherit",
             }),
+            multiValue: (base) => ({
+              ...base,
+              flex: "0 0 auto",
+            }),
+            valueContainer: (base) => ({
+              ...base,
+              display: "flex",
+              flexWrap: "nowrap",
+              overflow: "auto",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              paddingRight: "8px",
+              "::-webkit-scrollbar": {
+                display: "none",
+              },
+              scrollbarWidth: "none",
+            }),
           }}
         />
       </TableCell>
-      <TableCell className="w-[300px] min-w-[300px]">
+      <TableCell className="w-[300px] min-w-[300px] max-w-[300px]">
         <Select
           isMulti
           options={AEs}
@@ -161,16 +180,35 @@ export function RoundRobinTableRow({
             control: (base) => ({
               ...base,
               minWidth: "100%",
+              maxWidth: "280px",
               fontSize: "inherit",
             }),
             menu: (base) => ({
               ...base,
               minWidth: "100%",
+              maxWidth: "280px",
               fontSize: "inherit",
             }),
             option: (base) => ({
               ...base,
               fontSize: "inherit",
+            }),
+            multiValue: (base) => ({
+              ...base,
+              flex: "0 0 auto",
+            }),
+            valueContainer: (base) => ({
+              ...base,
+              display: "flex",
+              flexWrap: "nowrap",
+              overflow: "auto",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              paddingRight: "8px",
+              "::-webkit-scrollbar": {
+                display: "none",
+              },
+              scrollbarWidth: "none",
             }),
           }}
         />
