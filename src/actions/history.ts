@@ -6,7 +6,7 @@ import { revalidateTag } from "next/cache";
 export type HistoryEntry = {
   timestamp: string;
   teamState: TeamMember[];
-  result?: {
+  result: {
     request: { requirement: string; ae: string };
     next: TeamMember | null;
     requirements?: string;
@@ -14,10 +14,7 @@ export type HistoryEntry = {
   };
 };
 
-export async function addHistoryEntry(
-  teamState: TeamMember[],
-  result?: HistoryEntry["result"]
-): Promise<void> {
+export async function addHistoryEntry(teamState: TeamMember[], result?: HistoryEntry["result"]): Promise<void> {
   try {
     const historyStr = await redis.get("history");
     const history: HistoryEntry[] = historyStr ? JSON.parse(historyStr) : [];
@@ -25,7 +22,10 @@ export async function addHistoryEntry(
     const newEntry: HistoryEntry = {
       timestamp: new Date().toISOString(),
       teamState,
-      result,
+      result: result ?? {
+        request: { requirement: "", ae: "" },
+        next: null,
+      },
     };
 
     history.push(newEntry);

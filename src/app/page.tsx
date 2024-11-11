@@ -1,7 +1,7 @@
 import { RoundRobinTable } from "@/components/RoundRobinTable";
 import { AdvanceButton } from "@/components/AdvanceButton";
 import { getTeamData } from "@/actions/team";
-import { getHistory } from "@/actions/history";
+import { getHistory, HistoryEntry } from "@/actions/history";
 import CardHistory from "@/components/CardHistory";
 import { differenceInMilliseconds } from "date-fns";
 
@@ -36,7 +36,7 @@ export default async function Page() {
           <div className="flex flex-col gap-5">
             {history
               .toSorted((a, b) => differenceInMilliseconds(b.timestamp, a.timestamp))
-              .map((e) => (
+              .map((e: HistoryEntry) => (
                 <CardHistory data={e} />
               ))}
           </div>

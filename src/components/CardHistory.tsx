@@ -4,22 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { FileText, Clock, User, ArrowRight } from "lucide-react";
+import { HistoryEntry } from "@/actions/history";
 
-interface RotationData {
-  timestamp: string;
-  result: {
-    request: {
-      requirement: string;
-      ae: string;
-    };
-    next: {
-      name: string;
-      requirements: string[];
-    };
-  };
-}
-
-export default function CardHistory({ data }: { data: RotationData }) {
+export default function CardHistory({ data }: { data: HistoryEntry }) {
   const { timestamp, result } = data;
 
   return (
@@ -72,7 +59,7 @@ export default function CardHistory({ data }: { data: RotationData }) {
               <span className="text-sm truncate">{result.next?.name || "Unassigned"}</span>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{result.next?.name ? `Assigned to: ${result.next?.name}` : "Not yet assigned" + result.next?.error}</p>
+              <p>{result.next?.name ? `Assigned to: ${result.next?.name}` : "Not yet assigned" + result.error}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

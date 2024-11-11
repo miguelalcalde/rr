@@ -9,15 +9,11 @@ import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TableCell, TableRow } from "@/components/ui/table";
 import Select from "react-select";
 import { TeamMember } from "@/types";
-import { requirementOptions, AEs, isValidAE } from "@/lib/requirements";
+import { requirementOptions, AEs } from "@/lib/requirements";
 
 interface RoundRobinTableRowProps {
   member: TeamMember;
@@ -25,19 +21,12 @@ interface RoundRobinTableRowProps {
   allMembers: TeamMember[];
 }
 
-export function RoundRobinTableRow({
-  member,
-  index,
-  allMembers,
-}: RoundRobinTableRowProps) {
+export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTableRowProps) {
   const [isPending, startTransition] = useTransition();
-  const [optimisticMember, setOptimisticMember] = useOptimistic(
-    member,
-    (state, optimisticValue: { field: keyof TeamMember; value: any }) => ({
-      ...state,
-      [optimisticValue.field]: optimisticValue.value,
-    })
-  );
+  const [optimisticMember, setOptimisticMember] = useOptimistic(member, (state, optimisticValue: { field: keyof TeamMember; value: any }) => ({
+    ...state,
+    [optimisticValue.field]: optimisticValue.value,
+  }));
 
   const handleInputChange = (field: keyof TeamMember, value: any) => {
     setOptimisticMember({ field, value });
@@ -49,60 +38,36 @@ export function RoundRobinTableRow({
   return (
     <TableRow>
       <TableCell className="w-[150px] min-w-[100px]">
-        <Label className="line-clamp-1 text-xs md:text-sm">
-          {optimisticMember.name}
-        </Label>
+        <Label className="line-clamp-1 text-xs md:text-sm">{optimisticMember.name}</Label>
       </TableCell>
       <TableCell className="w-[80px] min-w-[80px] text-center">
-        <Checkbox
-          checked={optimisticMember.next}
-          onCheckedChange={(checked) => handleInputChange("next", checked)}
-        />
+        <Checkbox checked={optimisticMember.next} onCheckedChange={(checked) => handleInputChange("next", checked)} />
       </TableCell>
       <TableCell className="w-[80px] min-w-[80px]">
         <Input
           type="number"
           value={optimisticMember.skip}
-          onChange={(e) =>
-            handleInputChange("skip", parseInt(e.target.value, 10))
-          }
+          onChange={(e) => handleInputChange("skip", parseInt(e.target.value, 10))}
           className="w-full text-xs md:text-sm"
         />
       </TableCell>
       <TableCell className="w-[200px] min-w-[200px]">
         <Popover>
           <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-full justify-start text-left font-normal truncate text-xs md:text-sm"
-            >
+            <Button variant="outline" className="w-full justify-start text-left font-normal truncate text-xs md:text-sm">
               <CalendarIcon className="mr-2 h-3 w-3 md:h-4 md:w-4 shrink-0" />
-              <span className="truncate">
-                {optimisticMember.OOO
-                  ? format(new Date(optimisticMember.OOO), "PPP")
-                  : "Pick a date"}
-              </span>
+              <span className="truncate">{optimisticMember.OOO ? format(new Date(optimisticMember.OOO), "PPP") : "Pick a date"}</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <div className="flex flex-col">
               <Calendar
                 mode="single"
-                selected={
-                  optimisticMember.OOO
-                    ? new Date(optimisticMember.OOO)
-                    : undefined
-                }
-                onSelect={(date) =>
-                  handleInputChange("OOO", date ? date.toISOString() : null)
-                }
+                selected={optimisticMember.OOO ? new Date(optimisticMember.OOO) : undefined}
+                onSelect={(date) => handleInputChange("OOO", date ? date.toISOString() : null)}
                 initialFocus
               />
-              <Button
-                variant="ghost"
-                className="mt-2 text-xs md:text-sm"
-                onClick={() => handleInputChange("OOO", null)}
-              >
+              <Button variant="ghost" className="mt-2 text-xs md:text-sm" onClick={() => handleInputChange("OOO", null)}>
                 Clear Date
               </Button>
             </div>
@@ -113,13 +78,9 @@ export function RoundRobinTableRow({
         <Select
           isMulti
           options={requirementOptions}
-          value={requirementOptions.filter((option) =>
-            optimisticMember.requirements.includes(option.value)
-          )}
+          value={requirementOptions.filter((option) => optimisticMember.requirements.includes(option.value))}
           onChange={(selectedOptions) => {
-            const selectedRequirements = selectedOptions
-              ? selectedOptions.map((option) => option.value)
-              : [];
+            const selectedRequirements = selectedOptions ? selectedOptions.map((option) => option.value) : [];
             handleInputChange("requirements", selectedRequirements);
           }}
           className="w-full text-xs md:text-sm"
@@ -165,13 +126,9 @@ export function RoundRobinTableRow({
         <Select
           isMulti
           options={AEs}
-          value={AEs.filter((option) =>
-            optimisticMember.aes.includes(option.value)
-          )}
+          value={AEs.filter((option) => optimisticMember.aes.includes(option.value))}
           onChange={(selectedOptions) => {
-            const selectedAEs = selectedOptions
-              ? selectedOptions.map((option) => option.value)
-              : [];
+            const selectedAEs = selectedOptions ? selectedOptions.map((option) => option.value) : [];
             handleInputChange("aes", selectedAEs);
           }}
           className="w-full text-xs md:text-sm"
