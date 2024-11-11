@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { FileText, Clock, User, ArrowRight } from "lucide-react";
+import { FileText, Clock, User, ArrowRight, Building2 } from "lucide-react";
 import { HistoryEntry } from "@/actions/history";
 
 export default function CardHistory({ data }: { data: HistoryEntry }) {
@@ -11,7 +11,7 @@ export default function CardHistory({ data }: { data: HistoryEntry }) {
 
   return (
     <Card className="p-4 w-full ">
-      <div className="grid grid-cols-4 gap-4 items-center">
+      <div className="grid grid-cols-5 gap-4 items-center">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger className="flex items-center space-x-2">
@@ -44,6 +44,18 @@ export default function CardHistory({ data }: { data: HistoryEntry }) {
             </TooltipTrigger>
             <TooltipContent>
               <p>{result.request.ae ? `Assigned AE: ${result.request.ae}` : "No AE assigned"}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className="flex items-center space-x-2 justify-end">
+              <Building2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <span className="text-sm truncate">{result.request.company || "N/A"}</span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{result.request.company ? `Assigned company: ${result.request.company}` : "No company assigned"}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

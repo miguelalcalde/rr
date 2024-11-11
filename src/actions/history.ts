@@ -7,7 +7,7 @@ export type HistoryEntry = {
   timestamp: string;
   teamState: TeamMember[];
   result: {
-    request: { requirement: string; ae: string };
+    request: { requirement: string; ae: string; company: string };
     next: TeamMember | null;
     requirements?: string;
     error?: string;
@@ -23,7 +23,7 @@ export async function addHistoryEntry(teamState: TeamMember[], result?: HistoryE
       timestamp: new Date().toISOString(),
       teamState,
       result: result ?? {
-        request: { requirement: "", ae: "" },
+        request: { requirement: "", ae: "", company: "" },
         next: null,
       },
     };

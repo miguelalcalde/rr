@@ -18,14 +18,16 @@ const logState = (person: any, currentIndex: number) => {
 
 type Result = {
   request: {
+    company: string;
     requirement: string;
     ae: string;
+    isException?: boolean;
   };
   next: any;
   error?: string;
 };
 
-export async function getNextPerson(requirement = "", ae = ""): Promise<Result> {
+export async function getNextPerson(requirement = "", ae = "", company = ""): Promise<Result> {
   const result = await getTeamData();
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch team data");
@@ -45,7 +47,7 @@ export async function getNextPerson(requirement = "", ae = ""): Promise<Result> 
 
     if (firstSkippedIndex === currentIndex) {
       const errorResult = {
-        request: { requirement, ae },
+        request: { requirement, ae, company, isException },
         next: null,
         error: "Error: No one available under current conditions",
       };
@@ -120,7 +122,7 @@ export async function getNextPerson(requirement = "", ae = ""): Promise<Result> 
     const setResult = await setTeamData(team);
     if (!setResult.success) {
       const errorResult = {
-        request: { requirement, ae },
+        request: { requirement, ae, company, isException },
         next: null,
         error: setResult.error || "Failed to update team data",
       };
@@ -129,7 +131,7 @@ export async function getNextPerson(requirement = "", ae = ""): Promise<Result> 
     }
 
     const roundRobinResult = {
-      request: { requirement, ae },
+      request: { requirement, ae, company, isException },
       next: person,
       requirements: requirement,
     };
