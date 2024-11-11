@@ -1,11 +1,13 @@
 import { RoundRobinTable } from "@/components/RoundRobinTable";
 import { AdvanceButton } from "@/components/AdvanceButton";
 import { getTeamData } from "@/actions/team";
+import { getHistory } from "@/actions/history";
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const result = await getTeamData();
+  const history = await getHistory();
 
   if (!result.success) {
     return (
@@ -24,11 +26,15 @@ export default async function Page() {
           <AdvanceButton />
         </div>
         <RoundRobinTable teamData={result.data} />
+        {/* <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Current Team Data:</h2>
+          <pre>{JSON.stringify(result.data, null, 2)}</pre>
+        </div> */}
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">History:</h2>
+          <pre>{JSON.stringify(history, null, 2)}</pre>
+        </div>
       </div>
-      {/* <div>
-        <h2>Team Data:</h2>
-        <pre>{JSON.stringify(result.data, null, 2)}</pre>
-      </div> */}
     </div>
   );
 }

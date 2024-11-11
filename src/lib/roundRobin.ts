@@ -1,6 +1,7 @@
 import { getTeamData, setTeamData } from "@/actions/team";
 import { TeamMember } from "@/types";
 import { toast } from "sonner";
+import { addHistoryEntry } from "@/actions/history";
 
 const meetsRequirements = (person: any, requirement: string) => {
   return !requirement || person.requirements.includes(requirement);
@@ -34,11 +35,13 @@ export async function getNextPerson(requirement = "", ae = "") {
     logState(person, currentIndex);
 
     if (firstSkippedIndex === currentIndex) {
-      return {
+      const errorResult = {
         request: { requirement, ae },
         next: null,
         error: "Error: No one available under current conditions",
       };
+      await addHistoryEntry(team, errorResult);
+      return errorResult;
     }
 
     if (person.OOO && new Date(person.OOO) > today) {
@@ -111,18 +114,22 @@ export async function getNextPerson(requirement = "", ae = "") {
 
     const setResult = await setTeamData(team);
     if (!setResult.success) {
-      return {
+      const errorResult = {
         request: { requirement, ae },
         next: null,
         error: setResult.error || "Failed to update team data",
       };
+      await addHistoryEntry(team, errorResult);
+      return errorResult;
     }
 
-    // return ` -> ${person.name} ${requirement ? "[" + requirement + "]" : ""}`;
-    return {
+    const roundRobinResult = {
       request: { requirement, ae },
       next: person,
       requirements: requirement,
     };
+
+    await addHistoryEntry(team, roundRobinResult);
+    return roundRobinResult;
   }
 }
