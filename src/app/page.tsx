@@ -2,6 +2,8 @@ import { RoundRobinTable } from "@/components/RoundRobinTable";
 import { AdvanceButton } from "@/components/AdvanceButton";
 import { getTeamData } from "@/actions/team";
 import { getHistory } from "@/actions/history";
+import CardHistory from "@/components/CardHistory";
+import { differenceInMilliseconds } from "date-fns";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +23,7 @@ export default async function Page() {
 
   return (
     <div className="container flex justify-center py-10">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
+      <div className="z-10 w-full items-center justify-between font-mono text-sm">
         <div className="mb-4">
           <AdvanceButton />
         </div>
@@ -31,8 +33,16 @@ export default async function Page() {
           <pre>{JSON.stringify(result.data, null, 2)}</pre>
         </div> */}
         <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4">History:</h2>
-          <pre>{JSON.stringify(history, null, 2)}</pre>
+          <h2 className="text-xl font-bold mb-4">History</h2>
+          <div className="flex flex-col gap-5">
+            {history
+              .toSorted((a, b) =>
+                differenceInMilliseconds(b.timestamp, a.timestamp)
+              )
+              .map((e) => (
+                <CardHistory data={e} />
+              ))}
+          </div>
         </div>
       </div>
     </div>

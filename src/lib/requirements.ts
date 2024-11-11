@@ -6,6 +6,10 @@ export const requirementOptions = [
 ];
 
 export const AEs = [
-  { label: "AE One", value: "ae1@mail.com" },
-  { label: "AE Two", value: "ae2@mail.com" },
+  { label: "Zachary Chukwumah", value: "zachary.chukwumah@vercel.com" },
+  { label: "Jordan Chandler", value: "jordan.chandler@vercel.com" },
+  { label: "Megan Wilke", value: "megan.wilke@vercel.com" },
+  { label: "Stefan Nikolic", value: "stefan.nikolic@vercel.com" },
+  { label: "Jonas Woehrle", value: "jonas.woehrle@vercel.com" },
+  { label: "David Merino", value: "david.merino@vercel.com" },
 ];

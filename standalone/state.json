@@ -12,7 +12,7 @@
     "next": false,
     "skip": 0,
     "OOO": "",
-    "requirements": ["italian"],
+    "requirements": ["italian", "uk-based"],
     "aes": []
   },
   {
@@ -20,11 +20,11 @@
     "next": false,
     "skip": 0,
     "OOO": "",
-    "requirements": [],
+    "requirements": ["uk-based"],
     "aes": []
   },
   {
-    "name": "Yi Min",
+    "name": "Yi Min Yang",
     "next": false,
     "skip": 0,
     "OOO": "",
@@ -32,7 +32,7 @@
     "aes": []
   },
   {
-    "name": "Miguel",
+    "name": "Miguel Alcalde",
     "next": false,
     "skip": 0,
     "OOO": "",
@@ -40,11 +40,18 @@
     "aes": ["ae1@mail.com"]
   },
   {
-    "name": "Farhan",
+    "name": "Farhan Ali",
     "next": false,
     "skip": 0,
     "OOO": "",
-    "requirements": [],
-    "aes": ["ae2@mail.com"]
+    "requirements": ["uk-based"],
+    "aes": [
+      "zachary.chukwumah@vercel.com",
+      "jordan.chandler@vercel.com",
+      "megan.wilke@vercel.com",
+      "stefan.nikolic@vercel.com",
+      "jonas.woehrle@vercel.com",
+      "david.merino@vercel.com"
+    ]
   }
 ]
