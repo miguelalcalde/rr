@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { getNextPerson } from "@/lib/roundRobin";
 import Select from "react-select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { requirementOptions, AEs } from "@/lib/requirements";
 import { ArrowRight, Shuffle } from "lucide-react";
@@ -14,14 +14,19 @@ export function AdvanceButton() {
   const [selectedRequirement, setSelectedRequirement] = useState<string>("");
   const [selectedAE, setSelectedAE] = useState<string>("");
 
+  useEffect(() => {
+    toast("Toast system test", {
+      description: "If you see this, toasts are working!",
+    });
+  }, []);
+
   const aeOptions = AEs.map((ae) => ae);
 
   const handleAdvance = async () => {
     try {
       const result = await getNextPerson(selectedRequirement, selectedAE);
-      toast.warning("What is this", { position: "top-center" });
       if (result.error) {
-        toast.warning(result.error);
+        toast.error(result.error);
       } else {
         toast.success(`Next task assigned to ${result.next?.name}`, {
           description: [result.request.requirement, result.request.ae].filter(Boolean).join(" - "),
@@ -34,9 +39,8 @@ export function AdvanceButton() {
       router.refresh();
     } catch (error) {
       toast.error("Failed to advance round robin", {
-        description: error?.toString(),
-        duration: Infinity,
-        closeButton: true,
+        description: error instanceof Error ? error.message : String(error),
+        duration: 5000,
       });
       console.error("Failed to advance round robin:", error);
     }
