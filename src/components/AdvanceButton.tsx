@@ -7,7 +7,7 @@ import Select from "react-select";
 import { useState } from "react";
 import { toast } from "sonner";
 import { requirementOptions, AEs } from "@/lib/requirements";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Shuffle } from "lucide-react";
 
 export function AdvanceButton() {
   const router = useRouter();
@@ -23,10 +23,11 @@ export function AdvanceButton() {
         toast.warning(result.error);
       } else {
         toast.success(`Next task assigned to ${result.next?.name}`, {
-          description: [result.request.requirement, result.request.ae]
-            .filter(Boolean)
-            .join(" - "),
+          description: [result.request.requirement, result.request.ae].filter(Boolean).join(" - "),
         });
+        // Clear the inputs after successful assignment
+        setSelectedRequirement("");
+        setSelectedAE("");
       }
       // Refresh the current route and fetch new data
       router.refresh();
@@ -40,13 +41,26 @@ export function AdvanceButton() {
     }
   };
 
+  const handleRandom = () => {
+    // Always select a random AE
+    const randomAE = AEs[Math.floor(Math.random() * AEs.length)];
+    setSelectedAE(randomAE.value);
+
+    // Select requirement 30% of the time
+    const shouldSelectRequirement = Math.random() < 0.3;
+    if (shouldSelectRequirement) {
+      const randomRequirement = requirementOptions[Math.floor(Math.random() * requirementOptions.length)];
+      setSelectedRequirement(randomRequirement.value);
+    } else {
+      setSelectedRequirement("");
+    }
+  };
+
   return (
     <div className="flex gap-2 items-center justify-end">
       <Select
         options={requirementOptions}
-        value={requirementOptions.find(
-          (option) => option.value === selectedRequirement
-        )}
+        value={requirementOptions.find((option) => option.value === selectedRequirement)}
         onChange={(selectedOption) => {
           setSelectedRequirement(selectedOption ? selectedOption.value : "");
         }}
@@ -64,6 +78,10 @@ export function AdvanceButton() {
         className="w-[200px]"
         placeholder="AE"
       />
+      <Button variant="outline" onClick={handleRandom}>
+        <Shuffle className="w-4 h-4 mr-2" />
+        Random
+      </Button>
       <Button onClick={handleAdvance}>
         <ArrowRight className="w-4 h-4" />
         Next

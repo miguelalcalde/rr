@@ -12,11 +12,20 @@ const worksWithAE = (person: any, ae: string) => {
 };
 
 const logState = (person: any, currentIndex: number) => {
-  console.log(`currentIndex: ${currentIndex}, person ↓`);
-  console.log(person);
+  console.debug(`currentIndex: ${currentIndex}, person ↓`);
+  console.debug(person);
 };
 
-export async function getNextPerson(requirement = "", ae = "") {
+type Result = {
+  request: {
+    requirement: string;
+    ae: string;
+  };
+  next: any;
+  error?: string;
+};
+
+export async function getNextPerson(requirement = "", ae = ""): Promise<Result> {
   const result = await getTeamData();
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch team data");
@@ -31,7 +40,7 @@ export async function getNextPerson(requirement = "", ae = "") {
 
   while (true) {
     let person = team[currentIndex];
-    console.log("loop start");
+    console.debug("loop start");
     logState(person, currentIndex);
 
     if (firstSkippedIndex === currentIndex) {
@@ -45,7 +54,7 @@ export async function getNextPerson(requirement = "", ae = "") {
     }
 
     if (person.OOO && new Date(person.OOO) > today) {
-      console.log(`Skip: OOO`);
+      console.debug(`Skip: OOO`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       currentIndex = (currentIndex + 1) % team.length;
       person.next = false;
@@ -53,7 +62,7 @@ export async function getNextPerson(requirement = "", ae = "") {
     }
 
     if (requirement && !meetsRequirements(person, requirement)) {
-      console.log(`Skip: requirements`);
+      console.debug(`Skip: requirements`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       isException = true;
       currentIndex = (currentIndex + 1) % team.length;
@@ -61,7 +70,7 @@ export async function getNextPerson(requirement = "", ae = "") {
     }
 
     if (ae && !worksWithAE(person, ae)) {
-      console.log(`Skip: AE`);
+      console.debug(`Skip: AE`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       isException = true;
       currentIndex = (currentIndex + 1) % team.length;
@@ -70,7 +79,7 @@ export async function getNextPerson(requirement = "", ae = "") {
 
     // Not taking into account special requirements.
     if (person.skip > 0 && !isException) {
-      console.log(`Skip: Skip`);
+      console.debug(`Skip: Skip`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       person.skip--;
       person.next = false;
@@ -81,11 +90,7 @@ export async function getNextPerson(requirement = "", ae = "") {
     if (isException) {
       // Find eligible people
       const eligiblePeople = team.filter((p) => {
-        return (
-          meetsRequirements(p, requirement) &&
-          worksWithAE(p, ae) &&
-          (!p.OOO || new Date(p.OOO) <= today)
-        );
+        return meetsRequirements(p, requirement) && worksWithAE(p, ae) && (!p.OOO || new Date(p.OOO) <= today);
       });
 
       // Find the index of the person marked as next
@@ -104,7 +109,7 @@ export async function getNextPerson(requirement = "", ae = "") {
       currentIndex = team.findIndex((p) => p.name === bestPerson?.name);
       person = team[currentIndex];
     }
-    console.log("loop end");
+    console.debug("loop end");
     logState(person, currentIndex);
     team[currentIndex].next = false;
     const nextIndex = (currentIndex + 1) % team.length;

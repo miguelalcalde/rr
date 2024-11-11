@@ -14,9 +14,7 @@ export default async function Page() {
   if (!result.success) {
     return (
       <div className="container mx-auto py-10">
-        <div className="text-red-500">
-          Error: {result.error || "Failed to load team data"}
-        </div>
+        <div className="text-red-500">Error: {result.error || "Failed to load team data"}</div>
       </div>
     );
   }
@@ -37,9 +35,7 @@ export default async function Page() {
           <h2 className="text-xl font-bold mb-4">History</h2>
           <div className="flex flex-col gap-5">
             {history
-              .toSorted((a, b) =>
-                differenceInMilliseconds(b.timestamp, a.timestamp)
-              )
+              .toSorted((a, b) => differenceInMilliseconds(b.timestamp, a.timestamp))
               .map((e) => (
                 <CardHistory data={e} />
               ))}
