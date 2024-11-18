@@ -14,6 +14,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import Select from "react-select";
 import { TeamMember } from "@/types";
 import { requirementOptions, AEs } from "@/lib/requirements";
+import { cn } from "@/lib/utils";
 
 interface RoundRobinTableRowProps {
   member: TeamMember;
@@ -23,10 +24,13 @@ interface RoundRobinTableRowProps {
 
 export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTableRowProps) {
   const [isPending, startTransition] = useTransition();
-  const [optimisticMember, setOptimisticMember] = useOptimistic(member, (state, optimisticValue: { field: keyof TeamMember; value: any }) => ({
-    ...state,
-    [optimisticValue.field]: optimisticValue.value,
-  }));
+  const [optimisticMember, setOptimisticMember] = useOptimistic(
+    member,
+    (state, optimisticValue: { field: keyof TeamMember; value: any }) => ({
+      ...state,
+      [optimisticValue.field]: optimisticValue.value,
+    })
+  );
 
   const handleInputChange = (field: keyof TeamMember, value: any) => {
     setOptimisticMember({ field, value });
@@ -41,7 +45,10 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
         <Label className="line-clamp-1 text-xs md:text-sm">{optimisticMember.name}</Label>
       </TableCell>
       <TableCell className="w-[80px] min-w-[80px] text-center">
-        <Checkbox checked={optimisticMember.next} onCheckedChange={(checked) => handleInputChange("next", checked)} />
+        <Checkbox
+          checked={optimisticMember.next}
+          onCheckedChange={(checked) => handleInputChange("next", checked)}
+        />
       </TableCell>
       <TableCell className="w-[80px] min-w-[80px]">
         <Input
@@ -54,9 +61,20 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
       <TableCell className="w-[200px] min-w-[200px]">
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="w-full justify-start text-left font-normal truncate text-xs md:text-sm">
+            <Button
+              variant="outline"
+              className="w-full justify-start text-left font-normal truncate text-xs md:text-sm"
+            >
               <CalendarIcon className="mr-2 h-3 w-3 md:h-4 md:w-4 shrink-0" />
-              <span className="truncate">{optimisticMember.OOO ? format(new Date(optimisticMember.OOO), "PPP") : "Pick a date"}</span>
+              <span
+                className={cn("truncate", {
+                  "text-gray-400": !optimisticMember.OOO,
+                })}
+              >
+                {optimisticMember.OOO
+                  ? format(new Date(optimisticMember.OOO), "PPP")
+                  : "Pick a date"}
+              </span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -66,8 +84,13 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
                 selected={optimisticMember.OOO ? new Date(optimisticMember.OOO) : undefined}
                 onSelect={(date) => handleInputChange("OOO", date ? date.toISOString() : null)}
                 initialFocus
+                weekStartsOn={1}
               />
-              <Button variant="ghost" className="mt-2 text-xs md:text-sm" onClick={() => handleInputChange("OOO", null)}>
+              <Button
+                variant="ghost"
+                className="mt-2 text-xs md:text-sm"
+                onClick={() => handleInputChange("OOO", null)}
+              >
                 Clear Date
               </Button>
             </div>
@@ -78,9 +101,13 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
         <Select
           isMulti
           options={requirementOptions}
-          value={requirementOptions.filter((option) => optimisticMember.requirements.includes(option.value))}
+          value={requirementOptions.filter((option) =>
+            optimisticMember.requirements.includes(option.value)
+          )}
           onChange={(selectedOptions) => {
-            const selectedRequirements = selectedOptions ? selectedOptions.map((option) => option.value) : [];
+            const selectedRequirements = selectedOptions
+              ? selectedOptions.map((option) => option.value)
+              : [];
             handleInputChange("requirements", selectedRequirements);
           }}
           className="w-full text-xs md:text-sm"
@@ -128,7 +155,9 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
           options={AEs}
           value={AEs.filter((option) => optimisticMember.aes.includes(option.value))}
           onChange={(selectedOptions) => {
-            const selectedAEs = selectedOptions ? selectedOptions.map((option) => option.value) : [];
+            const selectedAEs = selectedOptions
+              ? selectedOptions.map((option) => option.value)
+              : [];
             handleInputChange("aes", selectedAEs);
           }}
           className="w-full text-xs md:text-sm"

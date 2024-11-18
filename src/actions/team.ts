@@ -3,7 +3,6 @@ import { revalidateTag } from "next/cache";
 import redis from "@/lib/redis";
 import state from "../../standalone/state.json";
 import { TeamMember, TeamDataResponse } from "@/types";
-import { addHistoryEntry } from "./history";
 
 export async function getTeamData(): Promise<TeamDataResponse> {
   try {
