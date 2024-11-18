@@ -5,6 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { FileText, Clock, User, ArrowRight, Building2, Asterisk } from "lucide-react";
 import { HistoryEntry } from "@/actions/history";
+import { cn } from "@/lib/utils";
 
 export default function CardHistory({ data }: { data: HistoryEntry }) {
   const { timestamp, result } = data;
@@ -13,7 +14,16 @@ export default function CardHistory({ data }: { data: HistoryEntry }) {
     <Card className="p-4 w-full relative">
       {result.isException && (
         <div className="absolute -top-2 -right-2 bg-white rounded-full p-1 border border-neutral-300">
-          <Asterisk className="h-4 w-4" />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className="flex items-center space-x-2">
+                <Asterisk className="h-4 w-4" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Assigned out of order</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       )}
       <div className="grid grid-cols-5 gap-4 items-center">
@@ -21,7 +31,9 @@ export default function CardHistory({ data }: { data: HistoryEntry }) {
           <Tooltip>
             <TooltipTrigger className="flex items-center space-x-2">
               <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <span className="text-sm font-medium truncate">{new Date(timestamp).toLocaleString()}</span>
+              <span className="text-sm font-medium truncate">
+                {new Date(timestamp).toLocaleString()}
+              </span>
             </TooltipTrigger>
             <TooltipContent>
               <p>Request Timestamp</p>
@@ -31,7 +43,11 @@ export default function CardHistory({ data }: { data: HistoryEntry }) {
 
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger className="flex items-center space-x-2">
+            <TooltipTrigger
+              className={cn("flex items-center space-x-2", {
+                "text-neutral-400": !result.request.requirement,
+              })}
+            >
               <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               <span className="text-sm truncate">{result.request.requirement || "N/A"}</span>
             </TooltipTrigger>
@@ -60,7 +76,11 @@ export default function CardHistory({ data }: { data: HistoryEntry }) {
               <span className="text-sm truncate">{result.request.company || "N/A"}</span>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{result.request.company ? `Assigned company: ${result.request.company}` : "No company assigned"}</p>
+              <p>
+                {result.request.company
+                  ? `Assigned company: ${result.request.company}`
+                  : "No company assigned"}
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -70,13 +90,24 @@ export default function CardHistory({ data }: { data: HistoryEntry }) {
             <TooltipTrigger className="flex items-center space-x-2">
               <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               <Avatar className="h-6 w-6 flex-shrink-0">
-                <AvatarImage src={`/ses/${result.next?.name.toLowerCase().replaceAll(" ", "-") || "unknown"}.png`} alt={result.next?.name || "Unknown"} />
-                <AvatarFallback>{result.next?.name ? result.next.name.charAt(0).toUpperCase() : "?"}</AvatarFallback>
+                <AvatarImage
+                  src={`/ses/${
+                    result.next?.name.toLowerCase().replaceAll(" ", "-") || "unknown"
+                  }.png`}
+                  alt={result.next?.name || "Unknown"}
+                />
+                <AvatarFallback>
+                  {result.next?.name ? result.next.name.charAt(0).toUpperCase() : "?"}
+                </AvatarFallback>
               </Avatar>
               <span className="text-sm truncate">{result.next?.name || "Unassigned"}</span>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{result.next?.name ? `Assigned to: ${result.next?.name}` : "Not yet assigned" + result.error}</p>
+              <p>
+                {result.next?.name
+                  ? `Assigned to: ${result.next?.name}`
+                  : "Not yet assigned" + result.error}
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

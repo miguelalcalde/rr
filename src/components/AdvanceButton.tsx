@@ -18,6 +18,25 @@ export function AdvanceButton() {
 
   const aeOptions = AEs.map((ae) => ae);
 
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      if (event.shiftKey) {
+        if (event.key === "R" || event.key === "r") {
+          handleRandom();
+        } else if (event.key === "N" || event.key === "n") {
+          handleAdvance();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [selectedRequirement, selectedAE, selectedCompany]);
+
   const handleAdvance = async () => {
     try {
       const result = await getNextPerson(selectedRequirement, selectedAE, selectedCompany);

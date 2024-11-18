@@ -4,6 +4,9 @@ import { getTeamData } from "@/actions/team";
 import { getHistory, HistoryEntry } from "@/actions/history";
 import CardHistory from "@/components/CardHistory";
 import { differenceInMilliseconds } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { Undo2 } from "lucide-react";
+import { UndoButton } from "@/components/UndoButton";
 
 export const dynamic = "force-dynamic";
 
@@ -32,12 +35,15 @@ export default async function Page() {
           <pre>{JSON.stringify(result.data, null, 2)}</pre>
         </div> */}
         <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4">History</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">History</h2>
+            <UndoButton />
+          </div>
           <div className="flex flex-col gap-5">
             {history
               .toSorted((a, b) => differenceInMilliseconds(b.timestamp, a.timestamp))
               .map((e: HistoryEntry) => (
-                <CardHistory data={e} />
+                <CardHistory key={e.timestamp} data={e} />
               ))}
           </div>
         </div>

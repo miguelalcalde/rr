@@ -15,7 +15,10 @@ export type HistoryEntry = {
   };
 };
 
-export async function addHistoryEntry(teamState: TeamMember[], result?: HistoryEntry["result"]): Promise<void> {
+export async function addHistoryEntry(
+  teamState: TeamMember[],
+  result?: HistoryEntry["result"]
+): Promise<void> {
   try {
     const historyStr = await redis.get("history");
     const history: HistoryEntry[] = historyStr ? JSON.parse(historyStr) : [];
@@ -30,6 +33,8 @@ export async function addHistoryEntry(teamState: TeamMember[], result?: HistoryE
     };
 
     history.push(newEntry);
+    console.log(`saving history entry...`);
+    console.log(history.map((e) => e.teamState));
     await redis.set("history", JSON.stringify(history));
     revalidateTag("history-data");
   } catch (error) {

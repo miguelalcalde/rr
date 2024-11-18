@@ -32,7 +32,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch team data");
   }
-
+  let oldTeam = JSON.parse(JSON.stringify(result.data)); // deep clone result.data
   let team = result.data as TeamMember[];
   const today = new Date();
   let currentIndex = team.findIndex((person: TeamMember) => person.next);
@@ -52,7 +52,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
         next: null,
         error: "Error: No one available under current conditions",
       };
-      await addHistoryEntry(team, errorResult);
+      await addHistoryEntry(oldTeam, errorResult);
       return errorResult;
     }
 
@@ -93,7 +93,11 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
     if (isException) {
       // Find eligible people
       const eligiblePeople = team.filter((p) => {
-        return meetsRequirements(p, requirement) && worksWithAE(p, ae) && (!p.OOO || new Date(p.OOO) <= today);
+        return (
+          meetsRequirements(p, requirement) &&
+          worksWithAE(p, ae) &&
+          (!p.OOO || new Date(p.OOO) <= today)
+        );
       });
 
       // Find the index of the person marked as next
@@ -128,7 +132,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
         next: null,
         error: setResult.error || "Failed to update team data",
       };
-      await addHistoryEntry(team, errorResult);
+      await addHistoryEntry(oldTeam, errorResult);
       return errorResult;
     }
 
@@ -139,7 +143,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
       requirements: requirement,
     };
 
-    await addHistoryEntry(team, roundRobinResult);
+    await addHistoryEntry(oldTeam, roundRobinResult);
     return roundRobinResult;
   }
 }
