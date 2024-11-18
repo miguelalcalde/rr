@@ -49,7 +49,8 @@ export function AdvanceButton() {
     // Select requirement 30% of the time
     const shouldSelectRequirement = Math.random() < 0.3;
     if (shouldSelectRequirement) {
-      const randomRequirement = requirementOptions[Math.floor(Math.random() * requirementOptions.length)];
+      const randomRequirement =
+        requirementOptions[Math.floor(Math.random() * requirementOptions.length)];
       setSelectedRequirement(randomRequirement.value);
     } else {
       setSelectedRequirement("");
@@ -61,7 +62,16 @@ export function AdvanceButton() {
 
   return (
     <div className="flex gap-2 items-center justify-end">
-      <Input value={selectedCompany} onChange={(e) => setSelectedCompany(e.target.value)} className="w-[200px]" placeholder="Company name" />
+      <Button variant="outline" onClick={handleRandom}>
+        <Shuffle className="w-4 h-4 mr-2" />
+        <span className="hidden sm:inline">Randomize</span>
+      </Button>
+      <Input
+        value={selectedCompany}
+        onChange={(e) => setSelectedCompany(e.target.value)}
+        className="w-[200px]"
+        placeholder="Company name"
+      />
       <Select
         options={requirementOptions}
         value={requirementOptions.find((option) => option.value === selectedRequirement)}
@@ -82,10 +92,6 @@ export function AdvanceButton() {
         className="w-[200px]"
         placeholder="AE"
       />
-      <Button variant="outline" onClick={handleRandom}>
-        <Shuffle className="w-4 h-4 mr-2 sm:mr-2 mr-0" />
-        <span className="hidden sm:inline">Random</span>
-      </Button>
       <Button onClick={handleAdvance}>
         <ArrowRight className="w-4 h-4 mr-0 sm:mr-2" />
         <span className="hidden sm:inline">Next</span>

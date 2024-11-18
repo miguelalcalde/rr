@@ -14,18 +14,15 @@ function toSnakeCase(str: string): string {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    let { requirement = "", ae = "" } = body;
+    let { requirement = "", ae = "", company = "" } = body;
     requirement = toSnakeCase(requirement);
     ae = toSnakeCase(ae);
-    const result = await getNextPerson(requirement, ae);
+    const result = await getNextPerson(requirement, ae, company);
     revalidateTag("team-data");
 
     return NextResponse.json({ result });
   } catch (error) {
     console.error("Error advancing round robin:", error);
-    return NextResponse.json(
-      { error: "Failed to advance round robin" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to advance round robin" }, { status: 500 });
   }
 }
