@@ -141,8 +141,12 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
       let oldNextName = oldTeam.find((p: TeamMember) => p.next).name;
       team.find((p: TeamMember) => p.name === oldNextName)!.next = true;
       person.skip++;
+    } else {
+      reasons.push(`Assign: Assigning ${person.name} in order`);
     }
-    if (!isException) team[nextIndex].next = true;
+    if (!isException) {
+      team[nextIndex].next = true;
+    }
     console.log(`SETTING TEAM...`);
     const setResult = await setTeamData(team);
     if (!setResult.success) {
