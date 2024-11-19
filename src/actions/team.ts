@@ -30,9 +30,10 @@ export async function getTeamData(): Promise<TeamDataResponse> {
 }
 
 export async function setTeamData(
-  teamData: TeamMember[]
+  teamData: TeamMember[] | undefined
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    if (!teamData) throw "Undefined team data";
     const sanitizedData = JSON.stringify(teamData);
     await redis.set("team", sanitizedData);
     revalidateTag("team-data");

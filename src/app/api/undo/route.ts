@@ -15,10 +15,7 @@ export async function POST() {
     // Get the last history entry
     const lastEntry = history.pop();
 
-    // Update team state to previous state
-    console.log(`reverting state...`);
-    console.log(lastEntry?.teamState);
-    const result = await setTeamData(lastEntry.teamState);
+    const result = await setTeamData(lastEntry?.teamState);
 
     if (!result.success) {
       return NextResponse.json(
