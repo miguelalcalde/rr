@@ -35,8 +35,8 @@ export async function addHistoryEntry(
     };
 
     history.push(newEntry);
-    console.log(`saving history entry...`);
-    console.log(history.map((e) => e.teamState));
+    // console.log(`saving history entry...`);
+    // console.log(history.map((e) => e.teamState));
     await redis.set("history", JSON.stringify(history));
     revalidateTag("history-data");
   } catch (error) {

@@ -46,7 +46,6 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
   while (true) {
     let person = team[currentIndex];
     console.debug("loop start");
-    console.debug(reasons);
     logState(person, currentIndex);
 
     if (firstSkippedIndex === currentIndex) {
@@ -131,7 +130,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
 
     if (isException) person.skip++;
     if (!isException) team[nextIndex].next = true;
-
+    console.log(`SETTING TEAM...`);
     const setResult = await setTeamData(team);
     if (!setResult.success) {
       const errorResult = {
