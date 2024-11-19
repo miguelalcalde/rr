@@ -2,6 +2,7 @@ import { getTeamData, setTeamData } from "@/actions/team";
 import { TeamMember } from "@/types";
 import { toast } from "sonner";
 import { addHistoryEntry } from "@/actions/history";
+import { format } from "date-fns";
 
 const meetsRequirements = (person: any, requirement: string) => {
   return !requirement || person.requirements.includes(requirement);
@@ -24,6 +25,7 @@ type Result = {
   };
   isException?: boolean;
   next: any;
+  reasons: string[];
   error?: string;
 };
 
@@ -39,10 +41,12 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
   let hasSpecialRequirement = requirement.length > 0;
   let isException = false; // this means we're moving on in the round robin to assign first person that meets the special requirements
   let firstSkippedIndex = -1;
+  let reasons = [];
 
   while (true) {
     let person = team[currentIndex];
     console.debug("loop start");
+    console.debug(reasons);
     logState(person, currentIndex);
 
     if (firstSkippedIndex === currentIndex) {
@@ -50,22 +54,25 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
         request: { requirement, ae, company },
         isException,
         next: null,
+        reasons,
         error: "Error: No one available under current conditions",
       };
       await addHistoryEntry(oldTeam, errorResult);
       return errorResult;
     }
 
-    if (person.OOO && new Date(person.OOO) > today) {
-      console.debug(`Skip: OOO`);
+    if (person.OOO && new Date(person.OOO).setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
+      reasons.push(`Skip: ${person.name} is OOO until ${format(new Date(person.OOO), "PPP")}`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       currentIndex = (currentIndex + 1) % team.length;
       person.next = false;
       continue;
+    } else if (person.OOO) {
+      person.OOO = "";
     }
 
     if (requirement && !meetsRequirements(person, requirement)) {
-      console.debug(`Skip: requirements`);
+      reasons.push(`Skip: ${person.name} doesn't meet the requirements`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       isException = true;
       currentIndex = (currentIndex + 1) % team.length;
@@ -73,6 +80,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
     }
 
     if (ae && !worksWithAE(person, ae)) {
+      reasons.push(`Skip: ${person.name} doesn't work with ${ae}`);
       console.debug(`Skip: AE`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       isException = true;
@@ -82,7 +90,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
 
     // Not taking into account special requirements.
     if (person.skip > 0 && !isException) {
-      console.debug(`Skip: Skip`);
+      reasons.push(`Skip: ${person.name} must be skipped ${person.skip} times`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       person.skip--;
       person.next = false;
@@ -96,7 +104,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
         return (
           meetsRequirements(p, requirement) &&
           worksWithAE(p, ae) &&
-          (!p.OOO || new Date(p.OOO) <= today)
+          (!p.OOO || new Date(p.OOO).setHours(0, 0, 0, 0) <= today.setHours(0, 0, 0, 0))
         );
       });
 
@@ -130,6 +138,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
         request: { requirement, ae, company },
         isException,
         next: null,
+        reasons,
         error: setResult.error || "Failed to update team data",
       };
       await addHistoryEntry(oldTeam, errorResult);
@@ -140,6 +149,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
       request: { requirement, ae, company },
       isException,
       next: person,
+      reasons,
       requirements: requirement,
     };
 

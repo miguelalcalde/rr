@@ -3,16 +3,16 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { FileText, Clock, User, ArrowRight, Building2, Asterisk } from "lucide-react";
+import { FileText, Clock, User, ArrowRight, Building2, Asterisk, Info } from "lucide-react";
 import { HistoryEntry } from "@/actions/history";
 import { cn } from "@/lib/utils";
 
 export default function CardHistory({ data }: { data: HistoryEntry }) {
   const { timestamp, result } = data;
-
+  console.debug(result);
   return (
     <Card className="p-4 w-full relative">
-      {result.isException && (
+      {(result.isException || result.reasons?.length > 0) && (
         <div className="absolute -top-2 -right-2 bg-white rounded-full p-1 border border-neutral-300">
           <TooltipProvider>
             <Tooltip>
@@ -20,7 +20,18 @@ export default function CardHistory({ data }: { data: HistoryEntry }) {
                 <Asterisk className="h-4 w-4" />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Assigned out of order</p>
+                {result.isException && <p>Assigned out of order</p>}
+                {result.reasons?.length > 0 ? (
+                  <ul className="list-disc pl-4 space-y-1">
+                    {result.reasons.map((reason, index) => (
+                      <li key={index} className="text-sm">
+                        {reason}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <></>
+                )}
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

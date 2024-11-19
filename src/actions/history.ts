@@ -12,6 +12,7 @@ export type HistoryEntry = {
     isException?: boolean;
     requirements?: string;
     error?: string;
+    reasons: string[];
   };
 };
 
@@ -29,6 +30,7 @@ export async function addHistoryEntry(
       result: result ?? {
         request: { requirement: "", ae: "", company: "" },
         next: null,
+        reasons: [],
       },
     };
 

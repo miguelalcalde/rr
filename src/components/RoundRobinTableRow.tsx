@@ -2,7 +2,7 @@
 
 import { useTransition, useOptimistic } from "react";
 import { updateTeamMember } from "@/actions/team";
-import { format } from "date-fns";
+import { addDays, addHours, format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -82,7 +82,10 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
               <Calendar
                 mode="single"
                 selected={optimisticMember.OOO ? new Date(optimisticMember.OOO) : undefined}
-                onSelect={(date) => handleInputChange("OOO", date ? date.toISOString() : null)}
+                onSelect={(date) => {
+                  console.log(date);
+                  handleInputChange("OOO", date ? addHours(date, 12).toISOString() : null);
+                }}
                 initialFocus
                 weekStartsOn={1}
               />
