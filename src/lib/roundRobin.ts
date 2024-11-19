@@ -138,7 +138,8 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
     if (isException) {
       reasons.push(`Edit: Increasing skip for ${person.name}, assigning out of order`);
       // ensure next remains where it was before assignment
-      team.find((p) => p.name === oldTeam.find((q) => q.next).name).next = true;
+      let oldNextName = oldTeam.find((p: TeamMember) => p.next).name;
+      team.find((p: TeamMember) => p.name === oldNextName)!.next = true;
       person.skip++;
     }
     if (!isException) team[nextIndex].next = true;
