@@ -1,9 +1,44 @@
 [
-  { "name": "Alice De Mauro", "next": true, "skip": 0, "OOO": "", "requirements": ["italian"], "aes": [] },
-  { "name": "Matt Reid", "next": false, "skip": 0, "OOO": "", "requirements": ["italian", "uk-based"], "aes": [] },
-  { "name": "Matt Froggett", "next": false, "skip": 0, "OOO": "", "requirements": ["uk-based"], "aes": [] },
-  { "name": "Yi Min Yang", "next": false, "skip": 0, "OOO": "", "requirements": ["german"], "aes": [] },
-  { "name": "Miguel Alcalde", "next": false, "skip": 0, "OOO": "", "requirements": ["spanish"], "aes": [] },
+  {
+    "name": "Alice De Mauro",
+    "next": true,
+    "skip": 0,
+    "OOO": "",
+    "requirements": ["italian"],
+    "aes": []
+  },
+  {
+    "name": "Matt Reid",
+    "next": false,
+    "skip": 0,
+    "OOO": "",
+    "requirements": ["italian", "uk-based"],
+    "aes": []
+  },
+  {
+    "name": "Matt Froggett",
+    "next": false,
+    "skip": 0,
+    "OOO": "",
+    "requirements": ["uk-based"],
+    "aes": []
+  },
+  {
+    "name": "Yi Min Yang",
+    "next": false,
+    "skip": 0,
+    "OOO": "",
+    "requirements": ["german"],
+    "aes": []
+  },
+  {
+    "name": "Miguel Alcalde",
+    "next": false,
+    "skip": 0,
+    "OOO": "",
+    "requirements": ["spanish"],
+    "aes": []
+  },
   {
     "name": "Farhan Ali",
     "next": false,
@@ -18,7 +53,8 @@
       "megan.wilke@vercel.com",
       "megan.wilke@vercel.com",
       "oskar.munch@vercel.com",
-      "erlend.fredsted@vercel.com"
+      "erlend.fredsted@vercel.com",
+      "yan.pineda@vercel.com"
     ]
   }
 ]
