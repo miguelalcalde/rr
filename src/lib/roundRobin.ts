@@ -71,7 +71,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
     }
 
     if (requirement && !meetsRequirements(person, requirement)) {
-      reasons.push(`Skip: ${person.name} doesn't meet the requirements`);
+      reasons.push(`Skip: ${person.name} doesn't meet the requirement ${requirement}`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       isException = true;
       currentIndex = (currentIndex + 1) % team.length;
@@ -90,6 +90,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
     // Not taking into account special requirements.
     if (person.skip > 0 && !isException) {
       reasons.push(`Skip: ${person.name} must be skipped ${person.skip} times`);
+      reasons.push(`Edit: Decreasing ${person.name} skip count`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
       person.skip--;
       person.next = false;
@@ -118,17 +119,28 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
 
       const lowestSkip = Math.min(...reorderedEligible.map((p) => p.skip));
       const bestPerson = reorderedEligible.find((p) => p.skip === lowestSkip);
-
+      reasons.push(
+        "Assign: Assigning out of order to the candidate with the lowest skip value: " +
+          `${bestPerson?.name} (${bestPerson?.skip}) out of [${eligiblePeople
+            .map((e) => `${e?.name} (${e?.skip})`)
+            .join(", ")}]`
+      );
       // Update current person to be the best candidate
       currentIndex = team.findIndex((p) => p.name === bestPerson?.name);
       person = team[currentIndex];
     }
+
     console.debug("loop end");
     logState(person, currentIndex);
     team[currentIndex].next = false;
     const nextIndex = (currentIndex + 1) % team.length;
 
-    if (isException) person.skip++;
+    if (isException) {
+      reasons.push(`Edit: Increasing skip for ${person.name}, assigning out of order`);
+      // ensure next remains where it was before assignment
+      team.find((p) => p.name === oldTeam.find((q) => q.next).name).next = true;
+      person.skip++;
+    }
     if (!isException) team[nextIndex].next = true;
     console.log(`SETTING TEAM...`);
     const setResult = await setTeamData(team);

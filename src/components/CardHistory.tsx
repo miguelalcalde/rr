@@ -3,7 +3,18 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { FileText, Clock, User, ArrowRight, Building2, Asterisk, Info } from "lucide-react";
+import {
+  FileText,
+  Clock,
+  User,
+  ArrowRight,
+  Building2,
+  Asterisk,
+  Info,
+  Pencil,
+  RedoDot,
+  CircleCheck,
+} from "lucide-react";
 import { HistoryEntry } from "@/actions/history";
 import { cn } from "@/lib/utils";
 
@@ -19,15 +30,28 @@ export default function CardHistory({ data }: { data: HistoryEntry }) {
               <TooltipTrigger className="flex items-center space-x-2">
                 <Asterisk className="h-4 w-4" />
               </TooltipTrigger>
-              <TooltipContent>
-                {result.isException && <p>Assigned out of order</p>}
+              <TooltipContent className="max-w-[600px] break-words">
+                {/* {result.isException && <p>Assigned out of order</p>} */}
                 {result.reasons?.length > 0 ? (
-                  <ul className="list-disc pl-4 space-y-1">
-                    {result.reasons.map((reason, index) => (
-                      <li key={index} className="text-sm">
-                        {reason}
-                      </li>
-                    ))}
+                  <ul className="pl-4 space-y-2">
+                    {result.reasons.map((reason, index) => {
+                      const startWord = reason.split(":")[0].toLowerCase();
+                      const icon =
+                        startWord === "edit" ? (
+                          <Pencil className="h-4 w-4" />
+                        ) : startWord === "skip" ? (
+                          <RedoDot className="h-4 w-4" />
+                        ) : startWord === "assign" ? (
+                          <CircleCheck className="h-4 w-4" />
+                        ) : null;
+
+                      return (
+                        <li key={index} className="text-sm flex items-start gap-2">
+                          {icon}
+                          <span className="flex-1">{reason}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : (
                   <></>

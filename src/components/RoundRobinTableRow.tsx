@@ -15,6 +15,7 @@ import Select from "react-select";
 import { TeamMember } from "@/types";
 import { requirementOptions, AEs } from "@/lib/requirements";
 import { cn } from "@/lib/utils";
+import { useEffect, useRef } from "react";
 
 interface RoundRobinTableRowProps {
   member: TeamMember;
@@ -32,6 +33,20 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
     })
   );
 
+  const prevNext = useRef(member.next);
+  const prevSkip = useRef(member.skip);
+  const prevOOO = useRef(member.OOO);
+
+  const nextChanged = prevNext.current !== optimisticMember.next;
+  const skipChanged = prevSkip.current !== optimisticMember.skip;
+  const oooChanged = prevOOO.current !== optimisticMember.OOO;
+
+  useEffect(() => {
+    prevNext.current = optimisticMember.next;
+    prevSkip.current = optimisticMember.skip;
+    prevOOO.current = optimisticMember.OOO;
+  }, [optimisticMember.next, optimisticMember.skip, optimisticMember.OOO]);
+
   const handleInputChange = (field: keyof TeamMember, value: any) => {
     setOptimisticMember({ field, value });
     startTransition(() => {
@@ -44,13 +59,13 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
       <TableCell className="w-[150px] min-w-[100px]">
         <Label className="line-clamp-1 text-xs md:text-sm">{optimisticMember.name}</Label>
       </TableCell>
-      <TableCell className="w-[80px] min-w-[80px] text-center">
+      <TableCell className="w-[80px] min-w-[80px] text-center !pr-4">
         <Checkbox
           checked={optimisticMember.next}
           onCheckedChange={(checked) => handleInputChange("next", checked)}
         />
       </TableCell>
-      <TableCell className="w-[80px] min-w-[80px]">
+      <TableCell className={cn("w-[80px] min-w-[80px]", skipChanged && "animate-highlight")}>
         <Input
           type="number"
           value={optimisticMember.skip}
@@ -58,7 +73,7 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
           className="w-full text-xs md:text-sm"
         />
       </TableCell>
-      <TableCell className="w-[200px] min-w-[200px]">
+      <TableCell className={cn("w-[200px] min-w-[200px]", oooChanged && "animate-highlight")}>
         <Popover>
           <PopoverTrigger asChild>
             <Button

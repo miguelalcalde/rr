@@ -1,11 +1,5 @@
 import { RoundRobinTableRow } from "./RoundRobinTableRow";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TeamMember } from "@/types";
 
 interface RoundRobinTableProps {
@@ -18,24 +12,18 @@ export function RoundRobinTable({ teamData }: RoundRobinTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px] min-w-[100px] text-xs md:text-sm">
-              Name
-            </TableHead>
-            <TableHead className="w-[80px] min-w-[80px] text-xs md:text-sm">
+            <TableHead className="w-[100px] min-w-[100px] text-xs md:text-sm">Name</TableHead>
+            <TableHead className="w-[80px] min-w-[80px] text-xs md:text-sm text-center">
               Next
             </TableHead>
-            <TableHead className="w-[80px] min-w-[80px] text-xs md:text-sm">
+            <TableHead className="w-[80px] min-w-[80px] text-xs md:text-sm text-center">
               Skip
             </TableHead>
-            <TableHead className="w-[200px] min-w-[200px] text-xs md:text-sm">
-              OOO
-            </TableHead>
+            <TableHead className="w-[200px] min-w-[200px] text-xs md:text-sm">OOO</TableHead>
             <TableHead className="w-[300px] min-w-[300px] text-xs md:text-sm">
               Requirements
             </TableHead>
-            <TableHead className="w-[300px] min-w-[300px] text-xs md:text-sm">
-              AEs
-            </TableHead>
+            <TableHead className="w-[300px] min-w-[300px] text-xs md:text-sm">AEs</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
