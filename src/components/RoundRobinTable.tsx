@@ -19,7 +19,7 @@ export function RoundRobinTable({ teamData }: RoundRobinTableProps) {
             <TableHead className="w-[80px] min-w-[80px] text-xs md:text-sm text-center">
               Skip
             </TableHead>
-            <TableHead className="w-[200px] min-w-[200px] text-xs md:text-sm">OOO</TableHead>
+            <TableHead className="w-[200px] min-w-[200px] text-xs md:text-sm">Out</TableHead>
             <TableHead className="w-[300px] min-w-[300px] text-xs md:text-sm">
               Requirements
             </TableHead>
