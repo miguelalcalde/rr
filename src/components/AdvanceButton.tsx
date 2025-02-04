@@ -15,12 +15,31 @@ import { TeamMember } from "@/types";
 
 export function AdvanceButton() {
   const router = useRouter();
+  const [showRandomize, setShowRandomize] = useState(false);
   const [selectedRequirement, setSelectedRequirement] = useState<string>("");
   const [selectedAE, setSelectedAE] = useState<string>("");
   const [selectedCompany, setSelectedCompany] = useState<string>("");
   const [selectedSE, setSelectedSE] = useState<string>("");
 
   const aeOptions = AEs.map((ae) => ae);
+
+  useEffect(() => {
+    const shouldShowRandomize = localStorage.getItem("showRandomize") === "true";
+    setShowRandomize(shouldShowRandomize);
+
+    const handleDevModeToggle = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "R") {
+        e.preventDefault();
+        const newShowRandomize = !showRandomize;
+        localStorage.setItem("showRandomize", String(newShowRandomize));
+        setShowRandomize(newShowRandomize);
+        toast.success(`Randomize button ${newShowRandomize ? "enabled" : "disabled"}`);
+      }
+    };
+
+    window.addEventListener("keydown", handleDevModeToggle);
+    return () => window.removeEventListener("keydown", handleDevModeToggle);
+  }, [showRandomize]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -145,60 +164,84 @@ export function AdvanceButton() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex gap-2 items-center justify-end">
-        <Button variant="outline" onClick={handleRandom}>
-          <Shuffle className="w-4 h-4 mr-2" />
-          <span className="hidden sm:inline">Randomize</span>
-        </Button>
-        <Input
-          value={selectedCompany}
-          onChange={(e) => setSelectedCompany(e.target.value)}
-          className="w-[200px]"
-          placeholder="Company name"
-        />
-        <Select
-          options={requirementOptions}
-          value={requirementOptions.find((option) => option.value === selectedRequirement)}
-          onChange={(selectedOption) => {
-            setSelectedRequirement(selectedOption ? selectedOption.value : "");
-          }}
-          isClearable
-          className="w-[200px]"
-          placeholder="Requirement"
-        />
-        <Select
-          options={aeOptions}
-          value={aeOptions.find((option) => option.value === selectedAE)}
-          onChange={(selectedOption) => {
-            setSelectedAE(selectedOption ? selectedOption.value : "");
-          }}
-          isClearable
-          className="w-[200px]"
-          placeholder="AE"
-        />
-        <Button onClick={handleAdvance}>
-          <ArrowRight className="w-4 h-4 mr-0 sm:mr-2" />
-          <span className="hidden sm:inline">Next</span>
-        </Button>
+    <div className="flex flex-col gap-6">
+      {/* Automatic Assignment Section */}
+      <div className="flex flex-col gap-4 pb-6 border-b">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-medium">Automatic Assignment</h2>
+          <div className="flex gap-2">
+            {showRandomize && (
+              <Button variant="outline" onClick={handleRandom}>
+                <Shuffle className="w-4 h-4 mr-2" />
+                <span>Randomize</span>
+              </Button>
+            )}
+            <Button onClick={handleAdvance}>
+              <ArrowRight className="w-4 h-4 mr-2" />
+              <span>Assign Next</span>
+            </Button>
+          </div>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Input
+            value={selectedCompany}
+            onChange={(e) => setSelectedCompany(e.target.value)}
+            className="w-full sm:w-[200px]"
+            placeholder="Company name"
+          />
+          <Select
+            options={requirementOptions}
+            value={requirementOptions.find((option) => option.value === selectedRequirement)}
+            onChange={(selectedOption) => {
+              setSelectedRequirement(selectedOption ? selectedOption.value : "");
+            }}
+            isClearable
+            className="w-full sm:w-[200px]"
+            placeholder="Requirement"
+          />
+          <Select
+            options={aeOptions}
+            value={aeOptions.find((option) => option.value === selectedAE)}
+            onChange={(selectedOption) => {
+              setSelectedAE(selectedOption ? selectedOption.value : "");
+            }}
+            isClearable
+            className="w-full sm:w-[200px]"
+            placeholder="AE"
+          />
+        </div>
       </div>
 
-      <div className="flex gap-2 items-center justify-end border-t pt-4">
-        <p className="text-sm text-muted-foreground mr-auto">Manual Override</p>
-        <Select
-          options={SEs}
-          value={SEs.find((option) => option.value === selectedSE)}
-          onChange={(selectedOption) => {
-            setSelectedSE(selectedOption ? selectedOption.value : "");
-          }}
-          isClearable
-          className="w-[200px]"
-          placeholder="Select SE"
-        />
-        <Button onClick={handleManualAssign} variant="secondary">
-          <ArrowRight className="w-4 h-4 mr-0 sm:mr-2" />
-          <span className="hidden sm:inline">Assign manually</span>
-        </Button>
+      {/* Manual Override Section */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-medium">Manual Override</h2>
+            <p className="text-sm text-muted-foreground">Directly assign to a specific SE</p>
+          </div>
+          <Button onClick={handleManualAssign} variant="secondary">
+            <ArrowRight className="w-4 h-4 mr-2" />
+            <span>Assign Manually</span>
+          </Button>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Input
+            value={selectedCompany}
+            onChange={(e) => setSelectedCompany(e.target.value)}
+            className="w-full sm:w-[200px]"
+            placeholder="Company name"
+          />
+          <Select
+            options={SEs}
+            value={SEs.find((option) => option.value === selectedSE)}
+            onChange={(selectedOption) => {
+              setSelectedSE(selectedOption ? selectedOption.value : "");
+            }}
+            isClearable
+            className="w-full sm:w-[200px]"
+            placeholder="Select SE"
+          />
+        </div>
       </div>
     </div>
   );
