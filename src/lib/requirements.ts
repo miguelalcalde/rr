@@ -22,6 +22,15 @@ export const AEs = [
   { label: "Erlend Fredsted", value: "erica.couto@vercel.com", segment: "MM" },
 ];
 
+export const SEs = [
+  { label: "Alice De Mauro", value: "Alice De Mauro" },
+  { label: "Matt Reid", value: "Matt Reid" },
+  { label: "Matt Froggett", value: "Matt Froggett" },
+  { label: "Yi Min Yang", value: "Yi Min Yang" },
+  { label: "Miguel Alcalde", value: "Miguel Alcalde" },
+  { label: "Farhan Ali", value: "Farhan Ali" },
+];
+
 export const companyNames = [
   "TechWave Solutions",
   "Skyline Innovations",

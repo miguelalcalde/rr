@@ -7,14 +7,18 @@ import Select from "react-select";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { requirementOptions, AEs, companyNames } from "@/lib/requirements";
+import { requirementOptions, AEs, companyNames, SEs } from "@/lib/requirements";
 import { ArrowRight, Shuffle } from "lucide-react";
+import { getTeamData, setTeamData } from "@/actions/team";
+import { addHistoryEntry } from "@/actions/history";
+import { TeamMember } from "@/types";
 
 export function AdvanceButton() {
   const router = useRouter();
   const [selectedRequirement, setSelectedRequirement] = useState<string>("");
   const [selectedAE, setSelectedAE] = useState<string>("");
   const [selectedCompany, setSelectedCompany] = useState<string>("");
+  const [selectedSE, setSelectedSE] = useState<string>("");
 
   const aeOptions = AEs.map((ae) => ae);
 
@@ -79,42 +83,123 @@ export function AdvanceButton() {
     setSelectedCompany(randomCompany);
   };
 
+  const handleManualAssign = async () => {
+    if (!selectedSE) {
+      toast.error("Please select an SE for manual assignment");
+      return;
+    }
+
+    if (!selectedCompany) {
+      toast.error("Please enter a company name");
+      return;
+    }
+
+    try {
+      const result = await getTeamData();
+      if (!result.success) {
+        throw new Error(result.error || "Failed to fetch team data");
+      }
+
+      const team = result.data;
+      const seIndex = team.findIndex((member) => member.name === selectedSE);
+
+      if (seIndex === -1) {
+        throw new Error("Selected SE not found in team data");
+      }
+
+      // Increase skip count for manual assignment
+      team[seIndex].skip += 1;
+
+      const setResult = await setTeamData(team);
+      if (!setResult.success) {
+        throw new Error(setResult.error || "Failed to update team data");
+      }
+
+      // Add history entry for manual assignment
+      await addHistoryEntry(team, {
+        request: { requirement: selectedRequirement, ae: selectedAE, company: selectedCompany },
+        next: team[seIndex],
+        isException: true,
+        reasons: [
+          `Manual override: Assigned to ${team[seIndex].name}`,
+          `Increased skip count for ${team[seIndex].name}`,
+        ],
+      });
+
+      toast.success(`${selectedCompany} manually assigned to ${team[seIndex].name}`, {
+        description: [selectedRequirement, selectedAE].filter(Boolean).join(" - "),
+      });
+
+      // Clear the inputs after successful assignment
+      setSelectedRequirement("");
+      setSelectedAE("");
+      setSelectedCompany("");
+      setSelectedSE("");
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to manually assign", {
+        description: error instanceof Error ? error.message : String(error),
+      });
+      console.error("Failed to manually assign:", error);
+    }
+  };
+
   return (
-    <div className="flex gap-2 items-center justify-end">
-      <Button variant="outline" onClick={handleRandom}>
-        <Shuffle className="w-4 h-4 mr-2" />
-        <span className="hidden sm:inline">Randomize</span>
-      </Button>
-      <Input
-        value={selectedCompany}
-        onChange={(e) => setSelectedCompany(e.target.value)}
-        className="w-[200px]"
-        placeholder="Company name"
-      />
-      <Select
-        options={requirementOptions}
-        value={requirementOptions.find((option) => option.value === selectedRequirement)}
-        onChange={(selectedOption) => {
-          setSelectedRequirement(selectedOption ? selectedOption.value : "");
-        }}
-        isClearable
-        className="w-[200px]"
-        placeholder="Requirement"
-      />
-      <Select
-        options={aeOptions}
-        value={aeOptions.find((option) => option.value === selectedAE)}
-        onChange={(selectedOption) => {
-          setSelectedAE(selectedOption ? selectedOption.value : "");
-        }}
-        isClearable
-        className="w-[200px]"
-        placeholder="AE"
-      />
-      <Button onClick={handleAdvance}>
-        <ArrowRight className="w-4 h-4 mr-0 sm:mr-2" />
-        <span className="hidden sm:inline">Next</span>
-      </Button>
+    <div className="flex flex-col gap-4">
+      <div className="flex gap-2 items-center justify-end">
+        <Button variant="outline" onClick={handleRandom}>
+          <Shuffle className="w-4 h-4 mr-2" />
+          <span className="hidden sm:inline">Randomize</span>
+        </Button>
+        <Input
+          value={selectedCompany}
+          onChange={(e) => setSelectedCompany(e.target.value)}
+          className="w-[200px]"
+          placeholder="Company name"
+        />
+        <Select
+          options={requirementOptions}
+          value={requirementOptions.find((option) => option.value === selectedRequirement)}
+          onChange={(selectedOption) => {
+            setSelectedRequirement(selectedOption ? selectedOption.value : "");
+          }}
+          isClearable
+          className="w-[200px]"
+          placeholder="Requirement"
+        />
+        <Select
+          options={aeOptions}
+          value={aeOptions.find((option) => option.value === selectedAE)}
+          onChange={(selectedOption) => {
+            setSelectedAE(selectedOption ? selectedOption.value : "");
+          }}
+          isClearable
+          className="w-[200px]"
+          placeholder="AE"
+        />
+        <Button onClick={handleAdvance}>
+          <ArrowRight className="w-4 h-4 mr-0 sm:mr-2" />
+          <span className="hidden sm:inline">Next</span>
+        </Button>
+      </div>
+
+      <div className="flex gap-2 items-center justify-end border-t pt-4">
+        <p className="text-sm text-muted-foreground mr-auto">Manual Override</p>
+        <Select
+          options={SEs}
+          value={SEs.find((option) => option.value === selectedSE)}
+          onChange={(selectedOption) => {
+            setSelectedSE(selectedOption ? selectedOption.value : "");
+          }}
+          isClearable
+          className="w-[200px]"
+          placeholder="Select SE"
+        />
+        <Button onClick={handleManualAssign} variant="secondary">
+          <ArrowRight className="w-4 h-4 mr-0 sm:mr-2" />
+          <span className="hidden sm:inline">Assign manually</span>
+        </Button>
+      </div>
     </div>
   );
 }
