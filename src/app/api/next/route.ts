@@ -20,9 +20,31 @@ export async function POST(request: Request) {
     const result = await getNextPerson(requirement, ae, company);
     revalidateTag("team-data");
 
-    return NextResponse.json({ result });
+    // If no one was assigned, return a specific status code and flag
+    if (!result.next) {
+      return NextResponse.json(
+        {
+          result,
+          requiresManualOverride: true,
+          message: "No eligible SE found. Manual assignment required.",
+        },
+        { status: 422 }
+      );
+    }
+
+    return NextResponse.json({
+      result,
+      requiresManualOverride: false,
+    });
   } catch (error) {
     console.error("Error advancing round robin:", error);
-    return NextResponse.json({ error: "Failed to advance round robin" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "Failed to advance round robin",
+        requiresManualOverride: true,
+        message: "Error occurred during assignment. Manual intervention required.",
+      },
+      { status: 500 }
+    );
   }
 }
