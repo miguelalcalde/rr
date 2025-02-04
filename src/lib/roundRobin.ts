@@ -98,7 +98,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
       continue;
     }
 
-    if (isException) {
+    if (isException || firstSkippedIndex === currentIndex) {
       // Find eligible people
       const eligiblePeople = team.filter((p) => {
         return (

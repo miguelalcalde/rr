@@ -5,7 +5,14 @@
     "skip": 0,
     "OOO": "",
     "requirements": ["italian"],
-    "aes": []
+    "aes": [
+      "julian.eckerle@vercel.com",
+      "stefan.nikolic@vercel.com",
+      "jonas.woehrle@vercel.com",
+      "erica.couto@vercel.com",
+      "erica.couto@vercel.com",
+      "david.merino@vercel.com"
+    ]
   },
   {
     "name": "Matt Reid",
@@ -13,7 +20,13 @@
     "skip": 0,
     "OOO": "",
     "requirements": ["italian", "uk-based"],
-    "aes": []
+    "aes": [
+      "jordan.chandler@vercel.com",
+      "oliver.pollins@vercel.com",
+      "zachary.chukwumah@vercel.com",
+      "theo.khoja@vercel.com",
+      "yan.pineda@vercel.com"
+    ]
   },
   {
     "name": "Matt Froggett",
@@ -21,7 +34,13 @@
     "skip": 0,
     "OOO": "",
     "requirements": ["uk-based"],
-    "aes": []
+    "aes": [
+      "jordan.chandler@vercel.com",
+      "oliver.pollins@vercel.com",
+      "zachary.chukwumah@vercel.com",
+      "theo.khoja@vercel.com",
+      "yan.pineda@vercel.com"
+    ]
   },
   {
     "name": "Yi Min Yang",
@@ -29,7 +48,14 @@
     "skip": 0,
     "OOO": "",
     "requirements": ["german"],
-    "aes": []
+    "aes": [
+      "julian.eckerle@vercel.com",
+      "stefan.nikolic@vercel.com",
+      "jonas.woehrle@vercel.com",
+      "erica.couto@vercel.com",
+      "erica.couto@vercel.com",
+      "david.merino@vercel.com"
+    ]
   },
   {
     "name": "Miguel Alcalde",
@@ -37,7 +63,14 @@
     "skip": 0,
     "OOO": "",
     "requirements": ["spanish"],
-    "aes": []
+    "aes": [
+      "julian.eckerle@vercel.com",
+      "stefan.nikolic@vercel.com",
+      "jonas.woehrle@vercel.com",
+      "erica.couto@vercel.com",
+      "erica.couto@vercel.com",
+      "david.merino@vercel.com"
+    ]
   },
   {
     "name": "Farhan Ali",
