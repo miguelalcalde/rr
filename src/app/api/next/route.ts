@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     let { requirement = "", ae = "", company = "" } = body;
     requirement = toSnakeCase(requirement);
-    ae = toSnakeCase(ae);
+    // ae should remain in email format
     const result = await getNextPerson(requirement, ae, company);
     revalidateTag("team-data");
 
