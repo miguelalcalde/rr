@@ -206,7 +206,11 @@ export function AdvanceButton() {
           />
           <Select
             options={requirementOptions}
-            value={requirementOptions.find((option) => option.value === selectedRequirement)}
+            value={
+              selectedRequirement
+                ? requirementOptions.find((option) => option.value === selectedRequirement)
+                : null
+            }
             onChange={(selectedOption) => {
               setSelectedRequirement(selectedOption ? selectedOption.value : "");
             }}
@@ -223,7 +227,7 @@ export function AdvanceButton() {
                 label: ae.label,
               };
             })}
-            value={aeOptions.find((option) => option.value === selectedAE)}
+            value={selectedAE ? aeOptions.find((option) => option.value === selectedAE) : null}
             onChange={(selectedOption) => {
               setSelectedAE(selectedOption ? selectedOption.value : "");
             }}
@@ -255,7 +259,7 @@ export function AdvanceButton() {
           />
           <Select
             options={SEs}
-            value={SEs.find((option) => option.value === selectedSE)}
+            value={selectedSE ? SEs.find((option) => option.value === selectedSE) : null}
             onChange={(selectedOption) => {
               setSelectedSE(selectedOption ? selectedOption.value : "");
             }}
