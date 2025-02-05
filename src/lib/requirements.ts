@@ -24,7 +24,7 @@ export const AEs = [
   { label: "Julian Eckerle", value: "julian.eckerle@vercel.com", segment: "ENT", region: "DACH" },
   { label: "Stefan Nikolic", value: "stefan.nikolic@vercel.com", segment: "MM", region: "DACH" },
   { label: "Jonas Woehrle", value: "jonas.woehrle@vercel.com", segment: "MM", region: "DACH" },
-  { label: "Lasse Pedersen", value: "lasse.pedersen@vercel.com", segment: "MM", region: "DACH" },
+  { label: "Lasse Pedersen", value: "lasse.pedersen@vercel.com", segment: "ENT", region: "DACH" },
   // -- NS
   { label: "Erica Couto", value: "erica.couto@vercel.com", segment: "ENT", region: "NS" },
   { label: "Megan Wilke", value: "megan.wilke@vercel.com", segment: "MM", region: "NS" },
