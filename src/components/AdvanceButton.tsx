@@ -12,6 +12,7 @@ import { ArrowRight, Shuffle } from "lucide-react";
 import { getTeamData, setTeamData } from "@/actions/team";
 import { addHistoryEntry } from "@/actions/history";
 import { TeamMember } from "@/types";
+import { components } from "react-select";
 
 export function AdvanceButton() {
   const router = useRouter();
@@ -22,6 +23,20 @@ export function AdvanceButton() {
   const [selectedSE, setSelectedSE] = useState<string>("");
 
   const aeOptions = AEs.map((ae) => ae);
+  const customOption = (props: any) => {
+    const { label, region, segment } = props.data;
+
+    return (
+      <components.Option {...props}>
+        <div>
+          {label}
+          <div style={{ fontSize: "0.8em", color: "#666" }}>
+            {segment} - {region}
+          </div>
+        </div>
+      </components.Option>
+    );
+  };
 
   useEffect(() => {
     const shouldShowRandomize = localStorage.getItem("showRandomize") === "true";
@@ -200,7 +215,14 @@ export function AdvanceButton() {
             placeholder="Requirement"
           />
           <Select
-            options={aeOptions}
+            components={{ Option: customOption }}
+            options={AEs.map((ae) => {
+              console.log("Mapping AE:", ae);
+              return {
+                ...ae,
+                label: ae.label,
+              };
+            })}
             value={aeOptions.find((option) => option.value === selectedAE)}
             onChange={(selectedOption) => {
               setSelectedAE(selectedOption ? selectedOption.value : "");

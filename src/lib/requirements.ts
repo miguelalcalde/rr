@@ -3,23 +3,34 @@ export const requirementOptions = [
   { label: "German", value: "german" },
   { label: "Spanish", value: "spanish" },
   { label: "UK based", value: "uk-based" },
+  { label: "German based", value: "german-based" },
+  { label: "Spain based", value: "spain-based" },
+  { label: "Holland based", value: "holland-based" },
 ];
 
 export const AEs = [
-  { label: "Jordan Chandler", value: "jordan.chandler@vercel.com", segment: "MM" },
-  { label: "Oliver Pollins", value: "oliver.pollins@vercel.com", segment: "ENT" },
-  { label: "Zachary Chukwumah", value: "zachary.chukwumah@vercel.com", segment: "MM" },
-  { label: "Theo Khoja", value: "theo.khoja@vercel.com", segment: "ENT" },
-  { label: "Julian Eckerle", value: "julian.eckerle@vercel.com", segment: "ENT" },
-  { label: "Stefan Nikolic", value: "stefan.nikolic@vercel.com", segment: "MM" },
-  { label: "Jonas Woehrle", value: "jonas.woehrle@vercel.com", segment: "MM" },
-  { label: "Yan Pineda", value: "yan.pineda@vercel.com", segment: "MM" },
-  //--
-  { label: "David Merino", value: "david.merino@vercel.com", segment: "ENT" },
-  { label: "Megan Wilke", value: "megan.wilke@vercel.com", segment: "MM" },
-  { label: "Oskar Munch", value: "oskar.munch@vercel.com", segment: "MM" },
-  { label: "Erica Couto", value: "erica.couto@vercel.com", segment: "ENT" },
-  { label: "Erlend Fredsted", value: "erica.couto@vercel.com", segment: "MM" },
+  // -- UK
+  { label: "Jordan Chandler", value: "jordan.chandler@vercel.com", segment: "MM", region: "UK" },
+  { label: "Oliver Pollins", value: "oliver.pollins@vercel.com", segment: "ENT", region: "UK" },
+  {
+    label: "Zachary Chukwumah",
+    value: "zachary.chukwumah@vercel.com",
+    segment: "MM",
+    region: "UK",
+  },
+  { label: "Theo Khoja", value: "theo.khoja@vercel.com", segment: "ENT", region: "UK" },
+  { label: "Yan Pineda", value: "yan.pineda@vercel.com", segment: "MM", region: "UK" },
+  // -- DACH
+  { label: "Julian Eckerle", value: "julian.eckerle@vercel.com", segment: "ENT", region: "DACH" },
+  { label: "Stefan Nikolic", value: "stefan.nikolic@vercel.com", segment: "MM", region: "DACH" },
+  { label: "Jonas Woehrle", value: "jonas.woehrle@vercel.com", segment: "MM", region: "DACH" },
+  { label: "Lasse Pedersen", value: "lasse.pedersen@vercel.com", segment: "MM", region: "DACH" },
+  // -- NS
+  { label: "Erica Couto", value: "erica.couto@vercel.com", segment: "ENT", region: "NS" },
+  { label: "Megan Wilke", value: "megan.wilke@vercel.com", segment: "MM", region: "NS" },
+  { label: "Erlend Fredsted", value: "erica.couto@vercel.com", segment: "MM", region: "NS" },
+  { label: "David Merino", value: "david.merino@vercel.com", segment: "ENT", region: "NS" },
+  { label: "Oskar Munch", value: "oskar.munch@vercel.com", segment: "MM", region: "NS" },
 ];
 
 export const SEs = [
