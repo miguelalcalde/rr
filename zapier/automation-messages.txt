@@ -1,0 +1,55 @@
+Requester: jonas.woehrle
+
+**Account Name**
+ZWILLING
+
+**SF Opportunity link**
+https://vercel.lightning.force.com/lightning/r/Opportunity/006PZ00000FcrkDYAR/view
+
+**Description**
+Situation: Zwilling is launching a new Next.js-based Henkels site on Salesforce Commerce Cloud backend, aiming to go live by end of February.
+Ask: Provide a Vercel standard demo/platform walkthrough. Create quote based on traffic estimates.
+Next Step: A demo session next Thursday 06.02. to review Vercel’s platform features and walkthrough costs.
+
+**Next call**
+2025-02-06 Between 14:30 and 16:00 CET. I need an SE for 30min.
+
+**Flexibility**
+
+**Other requirements:**
+---
+Requester: Theo
+
+**Account Name**
+Axa UK
+
+**SF Opportunity link**
+https://vercel.lightning.force.com/lightning/r/Opportunity/006PZ00000FegeFYAR/view
+
+**Description**
+Hey Team - Who can support an early stage engagement with Axa UK.  This has come in via a partner and we will have on site meetings with the partner in London.  Looking potentially at the first demo next week, perhaps the week after that depending on diaries.
+
+**Next call**
+
+**Flexibility**
+
+**Other requirements:**
+United Kingdom on-site required
+---
+Requester: Theo
+
+**Account Name**
+The AA
+
+**SF Opportunity link**
+https://vercel.lightning.force.com/lightning/r/Opportunity/006PZ00000ERPezYAH/view
+
+**Description**
+The AA need an estimate asap.  I have the data.  Nothing else required at the moment.  Who can support?
+
+**Next call**
+2025-01-30
+
+**Flexibility**
+
+**Other requirements:**
