@@ -21,6 +21,7 @@ export function AdvanceButton() {
   const [selectedAE, setSelectedAE] = useState<string>("");
   const [selectedCompany, setSelectedCompany] = useState<string>("");
   const [selectedSE, setSelectedSE] = useState<string>("");
+  const [customReason, setCustomReason] = useState<string>("");
 
   const aeOptions = AEs.map((ae) => ae);
   const customOption = (props: any) => {
@@ -124,7 +125,7 @@ export function AdvanceButton() {
     }
 
     if (!selectedCompany) {
-      toast.error("Please enter a company name");
+      toast.error("Please enter a company name in the automatic assignment section");
       return;
     }
 
@@ -157,6 +158,7 @@ export function AdvanceButton() {
         reasons: [
           `Manual override: Assigned to ${team[seIndex].name}`,
           `Increased skip count for ${team[seIndex].name}`,
+          ...(customReason ? [`Custom reason: ${customReason}`] : []),
         ],
       });
 
@@ -164,11 +166,12 @@ export function AdvanceButton() {
         description: [selectedRequirement, selectedAE].filter(Boolean).join(" - "),
       });
 
-      // Clear the inputs after successful assignment
+      // Clear all inputs after successful assignment
       setSelectedRequirement("");
       setSelectedAE("");
       setSelectedCompany("");
       setSelectedSE("");
+      setCustomReason("");
       router.refresh();
     } catch (error) {
       toast.error("Failed to manually assign", {
@@ -251,12 +254,6 @@ export function AdvanceButton() {
           </Button>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
-          <Input
-            value={selectedCompany}
-            onChange={(e) => setSelectedCompany(e.target.value)}
-            className="w-full sm:w-[200px]"
-            placeholder="Company name"
-          />
           <Select
             options={SEs}
             value={selectedSE ? SEs.find((option) => option.value === selectedSE) : null}
@@ -266,6 +263,12 @@ export function AdvanceButton() {
             isClearable
             className="w-full sm:w-[200px]"
             placeholder="Select SE"
+          />
+          <Input
+            value={customReason}
+            onChange={(e) => setCustomReason(e.target.value)}
+            className="w-full sm:flex-1"
+            placeholder="Reason for manual assignment (optional)"
           />
         </div>
       </div>

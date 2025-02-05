@@ -3,7 +3,7 @@
 import { useTransition, useOptimistic } from "react";
 import { updateTeamMember } from "@/actions/team";
 import { addDays, addHours, format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, MoreHorizontal, Trash2, Coffee, Cookie, Salad } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -11,6 +11,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TableCell, TableRow } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Select from "react-select";
 import { TeamMember } from "@/types";
 import { requirementOptions, AEs } from "@/lib/requirements";
@@ -52,6 +58,35 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
     startTransition(() => {
       updateTeamMember(allMembers, index, field, value);
     });
+  };
+
+  const handlePodAction = (action: string) => {
+    switch (action) {
+      case "clear":
+        handleInputChange("aes", []);
+        break;
+      case "uk":
+        const ukAEs = AEs.filter((ae) => ae.region === "UK").map((ae) => ae.value);
+        handleInputChange(
+          "aes",
+          Array.from(new Set(Array.from(optimisticMember.aes).concat(ukAEs)))
+        );
+        break;
+      case "dach":
+        const dachAEs = AEs.filter((ae) => ae.region === "DACH").map((ae) => ae.value);
+        handleInputChange(
+          "aes",
+          Array.from(new Set(Array.from(optimisticMember.aes).concat(dachAEs)))
+        );
+        break;
+      case "ns":
+        const nsAEs = AEs.filter((ae) => ae.region === "NS").map((ae) => ae.value);
+        handleInputChange(
+          "aes",
+          Array.from(new Set(Array.from(optimisticMember.aes).concat(nsAEs)))
+        );
+        break;
+    }
   };
 
   return (
@@ -216,6 +251,33 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
             }),
           }}
         />
+      </TableCell>
+      <TableCell className="w-[50px] min-w-[50px]">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => handlePodAction("clear")}>
+              <Trash2 className="mr-2 h-4 w-4" />
+              Clear pods
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handlePodAction("uk")}>
+              <Coffee className="mr-2 h-4 w-4" />
+              Assign UK pod
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handlePodAction("dach")}>
+              <Cookie className="mr-2 h-4 w-4" />
+              Assign DACH pod
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handlePodAction("ns")}>
+              <Salad className="mr-2 h-4 w-4" />
+              Assign NS pod
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </TableCell>
     </TableRow>
   );
