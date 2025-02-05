@@ -7,6 +7,7 @@ import { differenceInMilliseconds } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Undo2 } from "lucide-react";
 import { UndoButton } from "@/components/UndoButton";
+import { MoreButton } from "@/components/MoreButton";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +38,10 @@ export default async function Page() {
         <div className="mt-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">History</h2>
-            <UndoButton />
+            <div className="flex items-center gap-2">
+              <UndoButton />
+              <MoreButton />
+            </div>
           </div>
           <div className="flex flex-col gap-5">
             {history

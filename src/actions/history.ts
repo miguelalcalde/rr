@@ -53,3 +53,53 @@ export async function getHistory(): Promise<HistoryEntry[]> {
     return [];
   }
 }
+
+export async function exportHistory(): Promise<string> {
+  try {
+    const history = await getHistory();
+
+    // Define CSV headers
+    const headers = [
+      "Timestamp",
+      "Team State",
+      "Request Requirement",
+      "Request AE",
+      "Request Company",
+      "Next Person",
+      "Is Exception",
+      "Requirements",
+      "Error",
+      "Reasons",
+    ].join(",");
+
+    // Convert each history entry to CSV row
+    const rows = history.map((entry) => {
+      const teamState = JSON.stringify(entry.teamState).replace(/"/g, '""'); // Escape quotes for CSV
+      const nextPerson = entry.result.next
+        ? JSON.stringify(entry.result.next).replace(/"/g, '""')
+        : "";
+      const reasons = entry.result.reasons
+        ? entry.result.reasons.join("; ").replace(/"/g, '""')
+        : "";
+
+      return [
+        entry.timestamp,
+        `"${teamState}"`, // Wrap in quotes to handle commas in JSON
+        `"${entry.result.request.requirement}"`,
+        `"${entry.result.request.ae}"`,
+        `"${entry.result.request.company}"`,
+        `"${nextPerson}"`,
+        entry.result.isException || false,
+        `"${entry.result.requirements || ""}"`,
+        `"${entry.result.error || ""}"`,
+        `"${reasons}"`,
+      ].join(",");
+    });
+
+    // Combine headers and rows
+    return [headers, ...rows].join("\n");
+  } catch (error) {
+    console.error("Error exporting history:", error);
+    throw error;
+  }
+}
