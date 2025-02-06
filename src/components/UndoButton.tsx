@@ -5,28 +5,29 @@ import { Undo2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { hasEditPermission } from "@/lib/permissions";
 
 export function UndoButton() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  // ... existing imports ...
+  const canEdit = hasEditPermission();
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
+      if (!canEdit) return;
       if (event.shiftKey) {
         if (event.key === "U" || event.key === "u") {
           handleUndo();
-        } /*  else if (event.key === "N" || event.key === "n") {
-            handleAdvance();
-          } */
+        }
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [isLoading]); // Empty dependency array since handlers are stable
+  }, [isLoading, canEdit]);
 
   const handleUndo = async () => {
+    if (!canEdit) return;
     try {
       setIsLoading(true);
       const response = await fetch("/api/undo", {
@@ -57,7 +58,7 @@ export function UndoButton() {
   };
 
   return (
-    <Button variant="outline" size="sm" onClick={handleUndo} disabled={isLoading}>
+    <Button variant="outline" size="sm" onClick={handleUndo} disabled={isLoading || !canEdit}>
       <Undo2 className="w-4 h-4 mr-2" />
       <span>Undo</span>
     </Button>

@@ -13,6 +13,7 @@ import { getTeamData, setTeamData } from "@/actions/team";
 import { addHistoryEntry } from "@/actions/history";
 import { TeamMember } from "@/types";
 import { components } from "react-select";
+import { hasEditPermission } from "@/lib/permissions";
 
 export function AdvanceButton() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export function AdvanceButton() {
   const [selectedCompany, setSelectedCompany] = useState<string>("");
   const [selectedSE, setSelectedSE] = useState<string>("");
   const [customReason, setCustomReason] = useState<string>("");
+  const canEdit = hasEditPermission();
 
   const aeOptions = AEs.map((ae) => ae);
   const customOption = (props: any) => {
@@ -59,6 +61,7 @@ export function AdvanceButton() {
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
+      if (!canEdit) return;
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
         return;
       }
@@ -74,9 +77,10 @@ export function AdvanceButton() {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [selectedRequirement, selectedAE, selectedCompany]);
+  }, [selectedRequirement, selectedAE, selectedCompany, canEdit]);
 
   const handleAdvance = async () => {
+    if (!canEdit) return;
     try {
       const result = await getNextPerson(selectedRequirement, selectedAE, selectedCompany);
       if (result.error) {
@@ -100,6 +104,7 @@ export function AdvanceButton() {
   };
 
   const handleRandom = () => {
+    if (!canEdit) return;
     // Always select a random AE
     const randomAE = AEs[Math.floor(Math.random() * AEs.length)];
     setSelectedAE(randomAE.value);
@@ -119,6 +124,7 @@ export function AdvanceButton() {
   };
 
   const handleManualAssign = async () => {
+    if (!canEdit) return;
     if (!selectedSE) {
       toast.error("Please select an SE for manual assignment");
       return;
@@ -189,12 +195,12 @@ export function AdvanceButton() {
           <h2 className="text-lg font-medium">Automatic Assignment</h2>
           <div className="flex gap-2">
             {showRandomize && (
-              <Button variant="outline" onClick={handleRandom}>
+              <Button variant="outline" onClick={handleRandom} disabled={!canEdit}>
                 <Shuffle className="w-4 h-4 mr-2" />
                 <span>Randomize</span>
               </Button>
             )}
-            <Button onClick={handleAdvance}>
+            <Button onClick={handleAdvance} disabled={!canEdit}>
               <ArrowRight className="w-4 h-4 mr-2" />
               <span>Assign Next</span>
             </Button>
@@ -206,6 +212,7 @@ export function AdvanceButton() {
             onChange={(e) => setSelectedCompany(e.target.value)}
             className="w-full sm:w-[200px]"
             placeholder="Company name"
+            disabled={!canEdit}
           />
           <Select
             options={requirementOptions}
@@ -220,6 +227,7 @@ export function AdvanceButton() {
             isClearable
             className="w-full sm:w-[200px]"
             placeholder="Requirement"
+            isDisabled={!canEdit}
           />
           <Select
             components={{ Option: customOption }}
@@ -237,6 +245,7 @@ export function AdvanceButton() {
             isClearable
             className="w-full sm:w-[200px]"
             placeholder="AE"
+            isDisabled={!canEdit}
           />
         </div>
       </div>
@@ -248,7 +257,7 @@ export function AdvanceButton() {
             <h2 className="text-lg font-medium">Manual Override</h2>
             <p className="text-sm text-muted-foreground">Directly assign to a specific SE</p>
           </div>
-          <Button onClick={handleManualAssign} variant="secondary">
+          <Button onClick={handleManualAssign} variant="secondary" disabled={!canEdit}>
             <ArrowRight className="w-4 h-4 mr-2" />
             <span>Assign Manually</span>
           </Button>
@@ -263,12 +272,14 @@ export function AdvanceButton() {
             isClearable
             className="w-full sm:w-[200px]"
             placeholder="Select SE"
+            isDisabled={!canEdit}
           />
           <Input
             value={customReason}
             onChange={(e) => setCustomReason(e.target.value)}
             className="w-full sm:flex-1"
-            placeholder="Reason for manual assignment (optional)"
+            placeholder="Reason for manual assignment"
+            disabled={!canEdit}
           />
         </div>
       </div>

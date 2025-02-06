@@ -22,6 +22,7 @@ import { TeamMember } from "@/types";
 import { requirementOptions, AEs } from "@/lib/requirements";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
+import { hasEditPermission, hasDateOnlyPermission } from "@/lib/permissions";
 
 interface RoundRobinTableRowProps {
   member: TeamMember;
@@ -47,6 +48,9 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
   const skipChanged = prevSkip.current !== optimisticMember.skip;
   const oooChanged = prevOOO.current !== optimisticMember.OOO;
 
+  const canEdit = hasEditPermission();
+  const dateOnlyPermission = hasDateOnlyPermission();
+
   useEffect(() => {
     prevNext.current = optimisticMember.next;
     prevSkip.current = optimisticMember.skip;
@@ -54,6 +58,11 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
   }, [optimisticMember.next, optimisticMember.skip, optimisticMember.OOO]);
 
   const handleInputChange = (field: keyof TeamMember, value: any) => {
+    // If user only has date permission, only allow OOO changes
+    if (dateOnlyPermission && field !== "OOO") return;
+    // If user has no edit permission and is not date-only, block all changes
+    if (!canEdit && !dateOnlyPermission) return;
+
     setOptimisticMember({ field, value });
     startTransition(() => {
       updateTeamMember(allMembers, index, field, value);
@@ -61,6 +70,8 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
   };
 
   const handlePodAction = (action: string) => {
+    if (!canEdit) return;
+
     switch (action) {
       case "clear":
         handleInputChange("aes", []);
@@ -98,6 +109,7 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
         <Checkbox
           checked={optimisticMember.next}
           onCheckedChange={(checked) => handleInputChange("next", checked)}
+          disabled={!canEdit}
         />
       </TableCell>
       <TableCell className={cn("w-[80px] min-w-[80px]", skipChanged && "animate-highlight")}>
@@ -106,6 +118,7 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
           value={optimisticMember.skip}
           onChange={(e) => handleInputChange("skip", parseInt(e.target.value, 10))}
           className="w-full text-xs md:text-sm"
+          disabled={!canEdit}
         />
       </TableCell>
       <TableCell className={cn("w-[200px] min-w-[200px]", oooChanged && "animate-highlight")}>
@@ -114,6 +127,7 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
             <Button
               variant="outline"
               className="w-full justify-start text-left font-normal truncate text-xs md:text-sm"
+              disabled={!dateOnlyPermission && !canEdit}
             >
               <CalendarIcon className="mr-2 h-3 w-3 md:h-4 md:w-4 shrink-0" />
               <span
@@ -165,6 +179,7 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
           }}
           className="w-full text-xs md:text-sm"
           classNamePrefix="select"
+          isDisabled={!canEdit}
           styles={{
             control: (base) => ({
               ...base,
@@ -215,6 +230,7 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
           }}
           className="w-full text-xs md:text-sm"
           classNamePrefix="select"
+          isDisabled={!canEdit}
           styles={{
             control: (base) => ({
               ...base,
@@ -255,7 +271,7 @@ export function RoundRobinTableRow({ member, index, allMembers }: RoundRobinTabl
       <TableCell className="w-[50px] min-w-[50px]">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-8 p-0" disabled={!canEdit}>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
