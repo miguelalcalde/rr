@@ -232,7 +232,6 @@ export function AdvanceButton() {
           <Select
             components={{ Option: customOption }}
             options={AEs.map((ae) => {
-              console.log("Mapping AE:", ae);
               return {
                 ...ae,
                 label: ae.label,

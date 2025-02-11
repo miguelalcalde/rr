@@ -68,6 +68,7 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
       continue;
     } else if (person.OOO) {
       person.OOO = "";
+      reasons.push(`Edit: Removing OOO from ${person.name}`);
     }
 
     if (requirement && !meetsRequirements(person, requirement)) {
@@ -76,6 +77,8 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
       isException = true;
       currentIndex = (currentIndex + 1) % team.length;
       continue;
+    } else if (requirement) {
+      reasons.push(`Check: ${person.name} meets the requirement ${requirement}`);
     }
 
     if (ae && !worksWithAE(person, ae)) {
@@ -85,10 +88,12 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
       isException = true;
       currentIndex = (currentIndex + 1) % team.length;
       continue;
+    } else if (ae) {
+      reasons.push(`Check: ${person.name} works with ${ae}`);
     }
 
     // Not taking into account special requirements.
-    if (person.skip > 0 && !isException) {
+    if (person.skip > 0) {
       reasons.push(`Skip: ${person.name} must be skipped ${person.skip} times`);
       reasons.push(`Edit: Decreasing ${person.name} skip count`);
       if (firstSkippedIndex === -1) firstSkippedIndex = currentIndex;
@@ -96,6 +101,8 @@ export async function getNextPerson(requirement = "", ae = "", company = ""): Pr
       person.next = false;
       currentIndex = (currentIndex + 1) % team.length;
       continue;
+    } else if (person.skip > 0) {
+      reasons.push(`Check: ${person.name} must be skipped ${person.skip} times`);
     }
 
     if (isException || firstSkippedIndex === currentIndex) {

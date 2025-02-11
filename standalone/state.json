@@ -4,7 +4,7 @@
     "next": true,
     "skip": 0,
     "OOO": "",
-    "requirements": ["italian"],
+    "requirements": ["italian", "holland-based"],
     "aes": [
       "julian.eckerle@vercel.com",
       "stefan.nikolic@vercel.com",
@@ -50,7 +50,7 @@
     "next": false,
     "skip": 0,
     "OOO": "",
-    "requirements": ["german"],
+    "requirements": ["german", "german-based"],
     "aes": [
       "julian.eckerle@vercel.com",
       "stefan.nikolic@vercel.com",
@@ -68,7 +68,7 @@
     "next": false,
     "skip": 0,
     "OOO": "",
-    "requirements": ["spanish"],
+    "requirements": ["spanish", "spain-based"],
     "aes": [
       "julian.eckerle@vercel.com",
       "stefan.nikolic@vercel.com",

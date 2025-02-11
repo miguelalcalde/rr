@@ -5,7 +5,7 @@ async function parseAutomationMessage(message) {
 
   // Extract requester from first line
   const requesterMatch = message.match(/^Requester: (.+)/);
-  const requester = requesterMatch ? requesterMatch[1].trim() : "";
+  let requester = requesterMatch ? requesterMatch[1].trim() : "";
 
   // Helper function to extract field content
   const extractField = (field) => {
@@ -29,8 +29,8 @@ async function parseAutomationMessage(message) {
   const otherRequirements = extractField("Other requirements");
 
   // Extract SF Opportunity ID from link
-  const sfOpportunityId = sfOpportunityLink.match(/Opportunity\/(.*?)\//)
-    ? sfOpportunityLink.match(/Opportunity\/(.*?)\//)[1]
+  const sfOpportunityId = sfOpportunityLink.match(/Opportunity\/(.*?)(?:\/|$)/)
+    ? sfOpportunityLink.match(/Opportunity\/(.*?)(?:\/|$)/)[1]
     : "";
 
   // Parse next call date
@@ -125,27 +125,31 @@ async function parseAutomationMessage(message) {
 }
 
 // Test the function with the example message
-const testMessage = `Requester: zachary.chukwumah@vercel.com
+const testMessage = `Requester: lasse.pedersen@vercel.com
 
 *Account Name*
-Ninja Vista
+Robert Bosch GmbH
 
 *SF Opportunity link*
-https://vercel.lightning.force.com/lightning/r/Opportunity/006PZ00000FjU1KYAV/view
+https://vercel.lightning.force.com/lightning/r/Opportunity/006PZ00000Fqk7mYAB
 
 *Description*
-Working with an agency who manage the sites for a number of large customers in SA. They are scaling one of their customers and need to go through a security and compliance evaluation for their security team. This is high priority given they've experienced outages in the past. Next call is to review their security requirements in full, assisting them with the right documentation and then a recommendation for Vercel Enterprise.
+Robert Bosch is a engineering and technology company that focuses on automotive components and industrial products.
+
+We had a first exchange with a swedish Senior Software Engineer who is part of a software evaluation committee for the whole group (based in Germany) and has shown first interest in v0. However, higher management approval is needed for company-wide adoption and we will face strict data protection policies. The contact also requested more technical details on how v0 compares to existing AI code assistants.
+
+Next Steps are a technical deep dive in the next week (if possible), to understand their requirements, give more context around v0 and demo the technology. We should be prepared to address the data security concerns (most likely GDPR). This is part of a long-term engagement with Bosch and the goal is to trigger interest and discussion with the HQ in Germany.
 
 *Next call*
-2025-02-07 1.30pm (UK)
+ 
 
 *Flexibility*
 
 
-*Other requirements*
+*Other requirements:*
 
 
-(used in # – https://vercel.slack.com/archives/C02SRK8P45C/p1738692473129339 - https://vercel.slack.com/archives/C02SRK8P45C/p1738692473129339)`;
+(used in # – https://vercel.slack.com/archives/C02SRK8P45C/p1738867457599059 - https://vercel.slack.com/archives/C02SRK8P45C/p1738867457599059)`;
 
 // Run the test
 (async () => {
